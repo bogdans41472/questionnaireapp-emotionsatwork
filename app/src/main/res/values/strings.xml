@@ -41,4 +41,15 @@ beneficial to me in the long run, but they help to distract me from my reality. 
 to think that if I feel sad, there must be something wrong with me. I hold onto the belief that
 it is not appropriate to share my negative emotions with others.</string>
     <string name="summary_title">"Summary "</string>
+    <string name="exercises">Exercises</string>
+    <string name="unbreakable_exercises">The ABCDE Technique\nThe Mindful Bus Ride\nDelegating With Confidence\nExpress Coherently, Aligning Your Heart &amp; Brain\nLeveraging The Relationships Capital\nPerspective Taking: Understanding Others\nPromote Spontaneity and Openness\nStrengthen Your Flexibility Muscle</string>
+    <string name="inspector_exercises">The ABCDE Technique\nThe Mindful Bus Ride\nHardliner Perfectionist\nLeveraging The Relationships Capital\nOvercome The Fear Of Failure\nStrengthenYour Flexibility Muscle\nTaking Pride In Your Achievements\nWhere Talent Meets Opportunity</string>
+    <string name="savior_exercises">The ABCDE Technique\nThe Mindful Bus Ride\nBenefits Of Achieving Self-Actualization\nJohari Window\nLearn To Speak Assertively\nLet Actions-Not Impressions-Prevail\nStop Over-Identification\nWhy Self-Care Isn\'t Selfish</string>
+    <string name="rejected_exercises">The ABCDE Technique\nThe Mindful Bus Ride\nCracking The Rejection Code\nEnd Indecisiveness And Neediness\nLet Actions-Not Impressions-Prevail\nThe Real Consequence of Problem-Solving\nThings Are Not Happening To You, They Are Happening Through You\nWhere Talent Meets Opportunity</string>
+    <string name="pessimist_exercises">The ABCDE Technique\nThe Mindful Bus Ride\nCultivating Calm And Stress Tolerance\nDenied Facts And Feelings Are Still Facts And Feelings\nStrengthen Your Flexibility Muscle\nTaking Pride In Your Achievements\nThe Glass-Half-Full Mentality\nThe Real Consequences Of Problem Solving</string>
+    <string name="doer_exercises">The ABCDE Technique\nThe Mindful Bus Ride\nBenefits Of Achieving Self-Actualization\nCultivating Calm And Stress Tolerance\nDrained Achiever To Proud Achiever\nPromote Spontaneity And Openness\nResist The Impulse To Act\nTaking Pride In Your Achievements</string>
+    <string name="conformer_exercises">The ABCDE Technique\nThe Mindful Bus Ride\nEnd Indecisiveness And Neediness\nGiver, Taken, Or Sharer?\nLearn To Speak Assertively\nSetting Your Limits\nThings Are Not Happening To You, They Are Happening Through You\nWhy Self-Care Isn\'t Selfish</string>
+    <string name="dreamer_exercises">The ABCDE Technique\nThe Mindful Bus Ride\nDenied Facts And Feelings Are Still Facts And Feelings\nDon\'t Ignore Your Emotions: Combat Alexithymia\nGrowth is Being Sugar-Coated\nStop Over-Identification\nThe Real Consequences Of Problem Solving\nYou Choose: Realistic Optimism vs. Toxic Positivism</string>
+
+
 </resources>

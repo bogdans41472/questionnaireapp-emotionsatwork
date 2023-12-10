@@ -1,6 +1,9 @@
 package com.emotionsatwork.questionnaireapp.ui.composables
 
 import android.graphics.Paint
+import android.util.Log
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -17,6 +20,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,7 +35,7 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.Fill
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
@@ -82,16 +87,74 @@ fun Results(
                 .padding(bottom = 4.dp)
                 .background(Color.Black)
         )
+        var tabIndex by remember {
+            mutableIntStateOf(0)
+        }
+        val tabs = listOf(stringResource(id = R.string.summary_title), stringResource(id = R.string.exercises))
 
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(CenterHorizontally)
-                .padding(start = 4.dp, bottom = 8.dp, top = 8.dp),
-            text = stringResource(id = R.string.summary_title),
-            textAlign = TextAlign.Left,
-            fontWeight = FontWeight.Bold
-        )
+        Column(modifier = Modifier.fillMaxWidth()) {
+            var shouldShowSummary by remember {
+                mutableStateOf(true)
+            }
+            var shouldShowExercise by remember {
+                mutableStateOf(false)
+            }
+            TabRow(selectedTabIndex = tabIndex) {
+                tabs.forEachIndexed { index, title ->
+                    Tab(text = { Text(title) },
+                        selected = tabIndex == index,
+                        onClick = { tabIndex = index }
+                    )
+                }
+                when(tabIndex) {
+                    0 -> {
+                        shouldShowSummary = true
+                        shouldShowExercise = false
+                    }
+                    1 -> {
+                        shouldShowExercise = true
+                        shouldShowSummary = false
+                    }
+
+                }
+            }
+            if (shouldShowSummary) {
+                showSummary(selectedItem = selectedItem)
+            }
+            if (shouldShowExercise) {
+                showExercises(selectedItem = selectedItem)
+            }
+        }
+    }
+}
+
+@Composable
+fun showExercises(selectedItem: PersonalityType) {
+    val exercises: String = when(selectedItem) {
+        PersonalityType.UNBREAKABLE -> stringResource(id = R.string.unbreakable_exercises)
+        PersonalityType.INSPECTOR -> stringResource(id = R.string.inspector_exercises)
+        PersonalityType.SAVIOR -> stringResource(id = R.string.savior_exercises)
+        PersonalityType.REJECTED -> stringResource(id = R.string.rejected_exercises)
+        PersonalityType.PESSIMIST -> stringResource(id = R.string.pessimist_exercises)
+        PersonalityType.DOER -> stringResource(id = R.string.doer_exercises)
+        PersonalityType.CONFORMER -> stringResource(id = R.string.conformer_exercises)
+        PersonalityType.DREAMER -> stringResource(id = R.string.dreamer_exercises)
+        else -> ""
+    }
+    Text(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 4.dp, end = 4.dp, top = 8.dp),
+        text = exercises,
+    )
+}
+
+@Composable
+fun showSummary(selectedItem: PersonalityType) {
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .padding(top = 8.dp),
+    ) {
         val personalitySummary: String = when (selectedItem) {
             PersonalityType.UNBREAKABLE -> stringResource(id = R.string.unbreakable_summary)
             PersonalityType.INSPECTOR -> stringResource(id = R.string.inspector_summary)
@@ -106,12 +169,12 @@ fun Results(
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .align(CenterHorizontally)
                 .padding(start = 4.dp, end = 4.dp),
             text = personalitySummary,
             textAlign = TextAlign.Justify
         )
     }
+
 }
 
 @Composable
@@ -137,7 +200,7 @@ fun ClickablePieChart(
     val progressSize = mutableListOf<Float>()
 
     val density = LocalDensity.current
-    val textFontSize = with(density) { 30.dp.toPx() }
+    val textFontSize = with(density) { 18.dp.toPx() }
     val textPaint = remember {
         Paint().apply {
             color = textColor.toArgb()
@@ -145,13 +208,13 @@ fun ClickablePieChart(
             textAlign = Paint.Align.CENTER
         }
     }
-
     LaunchedEffect(angleProgress) {
         progressSize.add(angleProgress.first().toFloat())
         for (x in 1 until angleProgress.size) {
             progressSize.add(angleProgress[x].toFloat() + progressSize[x - 1])
         }
     }
+
     BoxWithConstraints(modifier = modifier, contentAlignment = Alignment.Center) {
         val canvasSize = constraints.maxWidth.coerceAtMost(constraints.maxWidth)
         val size = Size(canvasSize.toFloat(), canvasSize.toFloat())
@@ -166,6 +229,7 @@ fun ClickablePieChart(
                         touchX = offset.x,
                         touchY = offset.y
                     )
+                    Log.i("Bogdan", "clickedAngle: $clickedAngle")
                     progressSize.forEachIndexed { index, item ->
                         if (clickedAngle <= item) {
                             clickedItemIndex = index
@@ -180,20 +244,31 @@ fun ClickablePieChart(
                     color = getColorToUse(results[index].keys.elementAt(0)),
                     startAngle = startAngle,
                     sweepAngle = angle.toFloat(),
-                    useCenter = true,
+                    useCenter = false,
                     size = size,
-                    style = Fill
+                    style = Stroke(
+                        width = 64f
+                    )
                 )
                 startAngle += angle.toFloat()
             }
             if (clickedItemIndex != -1) {
                 drawIntoCanvas { canvas ->
+                    Log.i("Bogdan", "Canvas drawIntoCanvas")
                     val selectedPersonalityType = results[clickedItemIndex].keys.elementAt(0)
                     clickedItem.invoke(selectedPersonalityType)
+                    val xPosition = (canvasSize / 2) + textFontSize / 8
+                    val yPosition = (canvasSize / 2) + textFontSize / 8
                     canvas.nativeCanvas.drawText(
                         selectedPersonalityType.name,
-                        (canvasSize / 2) + textFontSize / 4,
-                        (canvasSize / 2) + textFontSize / 4,
+                        xPosition,
+                        yPosition,
+                        textPaint
+                    )
+                    canvas.nativeCanvas.drawText(
+                        (results[clickedItemIndex].values.elementAt(0)*100).toString() + "%",
+                        xPosition,
+                        yPosition + 80f,
                         textPaint
                     )
                 }
