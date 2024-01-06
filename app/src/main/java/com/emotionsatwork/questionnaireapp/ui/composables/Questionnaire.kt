@@ -125,10 +125,6 @@ fun Question(viewModel: QuestionnaireViewModel, onQuestionnaireComplete: (Boolea
                                         valueRange = minSliderValue..maxSliderValue,
                                         modifier = Modifier.padding(horizontal = 12.dp)
                                     )
-                                    Text(
-                                        text = "10",
-                                        modifier = Modifier.align(alignment = CenterVertically)
-                                    )
                                 }
                             }
                             Box(
@@ -137,13 +133,13 @@ fun Question(viewModel: QuestionnaireViewModel, onQuestionnaireComplete: (Boolea
                                     .padding(horizontal = 8.dp)
                             ) {
                                 Text(
-                                    text = "Least likely",
+                                    text = "Never",
                                     modifier = Modifier.align(CenterStart),
                                     textAlign = TextAlign.Start,
                                     fontSize = 10.sp
                                 )
                                 Text(
-                                    text = "Most likely",
+                                    text = "Always",
                                     modifier = Modifier.align(CenterEnd),
                                     textAlign = TextAlign.End,
                                     fontSize = 10.sp

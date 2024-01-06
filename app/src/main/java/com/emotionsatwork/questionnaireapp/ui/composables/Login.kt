@@ -57,7 +57,7 @@ fun Login(
                 modifier = Modifier.padding(top = 10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                val painter = painterResource(id = R.drawable.emotions_at_work)
+                val painter = painterResource(id = R.drawable.ic_launcher)
                 Image(
                     painter = painter,
                     contentDescription = "Logo",
