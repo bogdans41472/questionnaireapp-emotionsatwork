@@ -1,10 +1,8 @@
 package com.emotionsatwork.questionnaireapp.ui.composables
 
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
@@ -53,7 +51,7 @@ fun Login(
         Surface(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White)
+                .background(Color(0xFFF3F3F3))
         ) {
             Column(
                 modifier = Modifier.padding(top = 10.dp),
@@ -109,14 +107,20 @@ fun Login(
                                 .fillMaxWidth(),
                             onValueChange = { serialNumberHint = it },
                             maxLines = 1,
-                            textStyle = TextStyle(color = Color.Black, fontWeight = FontWeight.Normal),
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done),
+                            textStyle = TextStyle(
+                                color = Color.Black,
+                                fontWeight = FontWeight.Normal
+                            ),
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Text,
+                                imeAction = ImeAction.Done
+                            ),
                             keyboardActions = KeyboardActions(
                                 onDone = {
                                     saveThatUserHasAuthenticated(sharedPreferences)
                                     onLoginComplete.invoke(true)
                                     keyboardController?.hide()
-                            })
+                                })
                         )
                     }
                 }

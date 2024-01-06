@@ -1,24 +1,21 @@
 package com.emotionsatwork.questionnaireapp.ui.composables
 
 import android.graphics.Paint
-import android.util.Log
+import android.graphics.Typeface
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -34,8 +31,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.compositeOver
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
@@ -44,8 +39,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.core.graphics.ColorUtils
 import com.emotionsatwork.questionnaireapp.R
 
 import com.emotionsatwork.questionnaireapp.datamodel.PersonalityType
@@ -91,7 +84,10 @@ fun Results(
         var tabIndex by remember {
             mutableIntStateOf(0)
         }
-        val tabs = listOf(stringResource(id = R.string.summary_title), stringResource(id = R.string.exercises))
+        val tabs = listOf(
+            stringResource(id = R.string.summary_title),
+            stringResource(id = R.string.exercises)
+        )
 
         Column(modifier = Modifier.fillMaxWidth()) {
             var shouldShowSummary by remember {
@@ -107,11 +103,12 @@ fun Results(
                         onClick = { tabIndex = index }
                     )
                 }
-                when(tabIndex) {
+                when (tabIndex) {
                     0 -> {
                         shouldShowSummary = true
                         shouldShowExercise = false
                     }
+
                     1 -> {
                         shouldShowExercise = true
                         shouldShowSummary = false
@@ -120,18 +117,18 @@ fun Results(
                 }
             }
             if (shouldShowSummary) {
-                showSummary(selectedItem = selectedItem)
+                ShowSummary(selectedItem = selectedItem)
             }
             if (shouldShowExercise) {
-                showExercises(selectedItem = selectedItem)
+                ShowExercises(selectedItem = selectedItem)
             }
         }
     }
 }
 
 @Composable
-fun showExercises(selectedItem: PersonalityType) {
-    val exercises: String = when(selectedItem) {
+fun ShowExercises(selectedItem: PersonalityType) {
+    val exercises: String = when (selectedItem) {
         PersonalityType.UNBREAKABLE -> stringResource(id = R.string.unbreakable_exercises)
         PersonalityType.INSPECTOR -> stringResource(id = R.string.inspector_exercises)
         PersonalityType.SAVIOR -> stringResource(id = R.string.savior_exercises)
@@ -151,10 +148,11 @@ fun showExercises(selectedItem: PersonalityType) {
 }
 
 @Composable
-fun showSummary(selectedItem: PersonalityType) {
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .padding(top = 8.dp),
+fun ShowSummary(selectedItem: PersonalityType) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp),
     ) {
         val personalitySummary: String = when (selectedItem) {
             PersonalityType.UNBREAKABLE -> stringResource(id = R.string.unbreakable_summary)
@@ -209,6 +207,14 @@ fun ClickablePieChart(
             textAlign = Paint.Align.CENTER
         }
     }
+    val selectedTextPaint = remember {
+        Paint().apply {
+            color = Color.White.toArgb()
+            textSize = textFontSize
+            textAlign = Paint.Align.CENTER
+            typeface = Typeface.create(Typeface.MONOSPACE, Typeface.BOLD)
+        }
+    }
     val animatable = remember {
         Animatable(-90f)
     }
@@ -242,7 +248,6 @@ fun ClickablePieChart(
                         touchX = offset.x,
                         touchY = offset.y
                     )
-                    Log.i("Bogdan", "clickedAngle: $clickedAngle")
                     progressSize.forEachIndexed { index, item ->
                         if (clickedAngle <= item) {
                             clickedItemIndex = index
@@ -259,77 +264,87 @@ fun ClickablePieChart(
                     sweepAngle = angle.toFloat(),
                     useCenter = true,
                     size = size,
-
                     alpha = 0.65f
                 )
                 startAngle += angle.toFloat()
             }
             if (clickedItemIndex != -1) {
                 drawIntoCanvas { canvas ->
-                    Log.i("Bogdan", "Canvas drawIntoCanvas")
                     clickedItem.invoke(selectedPersonalityType)
-                    val xPosition = (canvasSize / 2) + textFontSize / 4
-                    val yPosition = (canvasSize / 2) + textFontSize / 4
-//                    canvas.nativeCanvas.drawText(
-//                        selectedPersonalityType.name,
-//                        xPosition,
-//                        yPosition,
-//                        textPaint
-//                    )
                     //first slice
                     val firstPersonalityString = (results[0].keys.elementAt(0)).toString()
-                    val firstPersonalityPercentage = ((results[0].values.elementAt(0)*100).toString() + "%")
+                    val firstPersonalityPercentage =
+                        ((results[0].values.elementAt(0) * 100).toString() + "%")
                     canvas.nativeCanvas.drawText(
                         firstPersonalityString,
-                        canvasSize - (canvasSize / 16).toFloat(),
-                        350f,
-                        textPaint
+                        800f,
+                        400f,
+                        if (clickedItemIndex == 0) {
+                            selectedTextPaint
+                        } else {
+                            textPaint
+                        }
                     )
                     canvas.nativeCanvas.drawText(
                         firstPersonalityPercentage,
-                        canvasSize - (canvasSize / 16).toFloat(),
-                        450f,
-                        textPaint
+                        800f,
+                        480f,
+                        if (clickedItemIndex == 0) {
+                            selectedTextPaint
+                        } else {
+                            textPaint
+                        }
                     )
                     //second slice
                     val secondPersonalityString = (results[1].keys.elementAt(0)).toString()
-                    val secondPersonalityPercentage = ((results[1].values.elementAt(0)*100).toString() + "%")
+                    val secondPersonalityPercentage =
+                        ((results[1].values.elementAt(0) * 100).toString() + "%")
 
                     canvas.nativeCanvas.drawText(
                         secondPersonalityString,
                         (canvasSize / 2).toFloat(),
-                        950f,
-                        textPaint
+                        800f,
+                        if (clickedItemIndex == 1) {
+                            selectedTextPaint
+                        } else {
+                            textPaint
+                        }
                     )
                     canvas.nativeCanvas.drawText(
                         secondPersonalityPercentage,
                         (canvasSize / 2).toFloat(),
-                        1050f,
-                        textPaint
+                        900f,
+                        if (clickedItemIndex == 1) {
+                            selectedTextPaint
+                        } else {
+                            textPaint
+                        }
                     )
-
                     // third slice
                     val thirdPersonalityString = (results[2].keys.elementAt(0)).toString()
-                    val thirdPersonalityPercentage = ((results[2].values.elementAt(0)*100).toString() + "%")
+                    val thirdPersonalityPercentage =
+                        ((results[2].values.elementAt(0) * 100).toString() + "%")
 
                     canvas.nativeCanvas.drawText(
                         thirdPersonalityString,
-                        (canvasSize / 8).toFloat(),
-                        350f,
-                        textPaint
+                        300f,
+                        400f,
+                        if (clickedItemIndex == 2) {
+                            selectedTextPaint
+                        } else {
+                            textPaint
+                        }
                     )
                     canvas.nativeCanvas.drawText(
                         thirdPersonalityPercentage,
-                        (canvasSize / 8).toFloat(),
-                        450f,
-                        textPaint
+                        300f,
+                        480f,
+                        if (clickedItemIndex == 2) {
+                            selectedTextPaint
+                        } else {
+                            textPaint
+                        }
                     )
-//                    canvas.nativeCanvas.drawText(
-//                        (results[clickedItemIndex].values.elementAt(0)*100).toString() + "%",
-//                        xPosition,
-//                        yPosition + 80f,
-//                        textPaint
-//                    )
                 }
             }
         }
@@ -361,23 +376,5 @@ fun getColorToUse(personalityType: PersonalityType): Color {
         PersonalityType.INSPECTOR -> Color(0xff45a297)
         PersonalityType.UNBREAKABLE -> Color(0xff4131c8)
         else -> Color.White
-    }
-}
-
-fun getSelectedColor(color: Color): Color {
-    return Color.Black
-}
-
-@Composable
-fun MyCircularProgress(loadState: Boolean) {
-    if (loadState) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator(
-                modifier = Modifier.size(80.dp, 80.dp)
-            )
-        }
     }
 }
