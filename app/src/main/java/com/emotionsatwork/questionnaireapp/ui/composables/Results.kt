@@ -352,14 +352,14 @@ private fun touchPointToAngle(
 
 fun getColorToUse(personalityType: PersonalityType): Color {
     return when (personalityType) {
-        PersonalityType.DREAMER -> Color.Cyan
-        PersonalityType.DOER -> Color.Green
-        PersonalityType.PESSIMIST -> Color.Black
-        PersonalityType.CONFORMER -> Color.LightGray
-        PersonalityType.REJECTED -> Color.Red
-        PersonalityType.SAVIOR -> Color.Magenta
-        PersonalityType.INSPECTOR -> Color.Blue
-        PersonalityType.UNBREAKABLE -> Color.Yellow
+        PersonalityType.DREAMER -> Color(0xffd277cf)
+        PersonalityType.DOER -> Color(0xfff9893c)
+        PersonalityType.PESSIMIST -> Color(0xffff5757)
+        PersonalityType.CONFORMER -> Color(0xff6c8bcb)
+        PersonalityType.REJECTED -> Color(0xfffffd57)
+        PersonalityType.SAVIOR -> Color(0xffffbf00)
+        PersonalityType.INSPECTOR -> Color(0xff45a297)
+        PersonalityType.UNBREAKABLE -> Color(0xff4131c8)
         else -> Color.White
     }
 }
