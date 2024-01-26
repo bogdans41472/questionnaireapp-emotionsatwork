@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Entity
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.Update
@@ -16,7 +17,7 @@ interface QuestionnaireDao {
     @Query("SELECT * FROM QuestionDb")
     fun getAll(): List<QuestionDb>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertQuestion(question: QuestionDb)
 
     @Delete

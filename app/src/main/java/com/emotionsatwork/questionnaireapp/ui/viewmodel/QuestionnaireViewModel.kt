@@ -134,7 +134,6 @@ class QuestionnaireViewModel(
     }
 
     companion object {
-        private const val ANSWERED_QUESTIONS = "QUESTION"
         private const val LAST_QUESTION_INDEX = "LAST_INDEX"
     }
 }
