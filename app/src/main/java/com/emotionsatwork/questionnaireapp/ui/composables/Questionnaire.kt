@@ -61,7 +61,7 @@ fun Questionnaire(
     }
 }
 
-
+// add info icon with instructions on how to answer questions
 @Composable
 fun Question(viewModel: QuestionnaireViewModel, onQuestionnaireComplete: (Boolean) -> Unit) {
     val question by viewModel.questionFlow.collectAsStateWithLifecycle()

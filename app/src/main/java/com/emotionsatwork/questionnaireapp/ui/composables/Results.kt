@@ -1,7 +1,9 @@
 package com.emotionsatwork.questionnaireapp.ui.composables
 
+import android.content.Intent
 import android.graphics.Paint
 import android.graphics.Typeface
+import android.net.Uri
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -11,21 +13,34 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,20 +50,23 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import com.emotionsatwork.questionnaireapp.R
-
 import com.emotionsatwork.questionnaireapp.datamodel.PersonalityType
 import com.emotionsatwork.questionnaireapp.ui.viewmodel.QuestionnaireViewModel
 import java.util.concurrent.TimeUnit
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Results(
     viewModel: QuestionnaireViewModel,
 ) {
+    var openBottomSheet by rememberSaveable { mutableStateOf(false) }
     val futureResult = viewModel.getResultForUser()
     val results = futureResult.get(5, TimeUnit.SECONDS)
     var selectedItem by remember {
@@ -75,6 +93,14 @@ fun Results(
             ) {
                 selectedItem = it
             }
+        }
+        IconButton(
+            onClick = {
+                openBottomSheet = true
+            }, modifier = Modifier
+                .align(Alignment.End)
+        ) {
+            Icon(Icons.Filled.Info, contentDescription = "More info")
         }
         Divider(
             thickness = 1.dp, modifier = Modifier
@@ -124,6 +150,38 @@ fun Results(
             }
         }
     }
+
+    var edgeToEdgeEnabled by remember { mutableStateOf(false) }
+    var skipPartiallyExpanded by remember { mutableStateOf(false) }
+    val bottomSheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = skipPartiallyExpanded
+    )
+
+    if (openBottomSheet) {
+        val windowInsets = if (edgeToEdgeEnabled)
+            WindowInsets(0) else BottomSheetDefaults.windowInsets
+
+        ModalBottomSheet(
+            onDismissRequest = { openBottomSheet = false },
+            sheetState = bottomSheetState,
+            windowInsets = windowInsets
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 4.dp, end = 4.dp),
+                    text = stringResource(R.string.info_tutorial),
+                    textAlign = TextAlign.Justify
+                )
+            }
+        }
+    }
 }
 
 @Composable
@@ -139,12 +197,38 @@ fun ShowExercises(selectedItem: PersonalityType) {
         PersonalityType.DREAMER -> stringResource(id = R.string.dreamer_exercises)
         else -> ""
     }
-    Text(
+    Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 4.dp, end = 4.dp, top = 8.dp),
-        text = exercises,
-    )
+            .fillMaxHeight()
+            .padding(start = 4.dp, end = 4.dp, top = 8.dp)
+    ) {
+        Text(
+            modifier = Modifier
+                .fillMaxWidth(),
+            text = exercises,
+        )
+        val url = stringResource(id = R.string.url_to_website)
+        val context = LocalContext.current
+        TextButton(
+            onClick = {
+                val website = Uri.parse(url)
+                val intent = Intent(Intent.ACTION_VIEW, website)
+                startActivity(context, intent, null)
+            },
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 8.dp)
+                .align(Alignment.CenterHorizontally),
+        ) {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.Bottom),
+                textAlign = TextAlign.Center,
+                text = stringResource(R.string.url_details) + stringResource(id = R.string.url_to_website)
+            )
+        }
+    }
 }
 
 @Composable
@@ -371,7 +455,7 @@ fun getColorToUse(personalityType: PersonalityType): Color {
         PersonalityType.DOER -> Color(0xfff9893c)
         PersonalityType.PESSIMIST -> Color(0xffff5757)
         PersonalityType.CONFORMER -> Color(0xff6c8bcb)
-        PersonalityType.REJECTED -> Color(0xfffffd57)
+        PersonalityType.REJECTED -> Color(0xffe1e2ec)
         PersonalityType.SAVIOR -> Color(0xffffbf00)
         PersonalityType.INSPECTOR -> Color(0xff45a297)
         PersonalityType.UNBREAKABLE -> Color(0xff4131c8)

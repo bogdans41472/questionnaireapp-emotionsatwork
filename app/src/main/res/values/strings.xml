@@ -50,6 +50,10 @@ it is not appropriate to share my negative emotions with others.</string>
     <string name="doer_exercises">The ABCDE Technique\nThe Mindful Bus Ride\nBenefits Of Achieving Self-Actualization\nCultivating Calm And Stress Tolerance\nDrained Achiever To Proud Achiever\nPromote Spontaneity And Openness\nResist The Impulse To Act\nTaking Pride In Your Achievements</string>
     <string name="conformer_exercises">The ABCDE Technique\nThe Mindful Bus Ride\nEnd Indecisiveness And Neediness\nGiver, Taken, Or Sharer?\nLearn To Speak Assertively\nSetting Your Limits\nThings Are Not Happening To You, They Are Happening Through You\nWhy Self-Care Isn\'t Selfish</string>
     <string name="dreamer_exercises">The ABCDE Technique\nThe Mindful Bus Ride\nDenied Facts And Feelings Are Still Facts And Feelings\nDon\'t Ignore Your Emotions: Combat Alexithymia\nGrowth is Being Sugar-Coated\nStop Over-Identification\nThe Real Consequences Of Problem Solving\nYou Choose: Realistic Optimism vs. Toxic Positivism</string>
+    <string name="info_tutorial">Tap on any segment for details on other mental models </string>
+    <string name="url_to_website">https://emotions-at-work.activehosted.com/f/3</string>
+    <string name="url_details">"For more details, please click this text to visit our website: "</string>
+    <string name="onboarding">Ready to discover your predominant mental models?</string>
 
 
 </resources>

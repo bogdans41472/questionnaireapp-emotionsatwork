@@ -29,6 +29,7 @@ class MainActivity : ComponentActivity() {
                     getDb().questionnaireDao()
                 )
                 NavHost(navController = navController, startDestination = "auth") {
+                    // replace login with onboarding screen
                     navigation(
                         startDestination = "login",
                         route = "auth"
@@ -51,6 +52,7 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                     }
+                    // show congratulations
                     navigation(
                         startDestination = "results_overview",
                         route = "results"

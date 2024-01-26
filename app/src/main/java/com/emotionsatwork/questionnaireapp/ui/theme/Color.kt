@@ -2,9 +2,6 @@ package com.emotionsatwork.questionnaireapp.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val PurpleGrey80 = Color(0xFFCCC2DC)
-
-
 val PrimaryDark = Color(0xFF388E3C)
 val SecondaryDark = Color(0xFF2B6F2E)
 

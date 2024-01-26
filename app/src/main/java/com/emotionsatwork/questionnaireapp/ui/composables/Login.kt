@@ -18,6 +18,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,16 +32,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.emotionsatwork.questionnaireapp.R
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 fun Login(
     sharedPreferences: SharedPreferences,
     onLoginComplete: (Boolean) -> Unit
@@ -68,68 +71,25 @@ fun Login(
                         .padding(horizontal = 10.dp),
                     alignment = Alignment.TopCenter
                 )
-                var serialNumberHint by remember {
-                    mutableStateOf(
-                        TextFieldValue(
-                            ""
-                        )
-                    )
-                }
                 Row(
                     modifier = Modifier
                         .padding(4.dp)
                 ) {
-                    val hint = "Enter your book serial number below"
-                    val keyboardController = LocalSoftwareKeyboardController.current
                     Column {
-                        val textColor = Color.Unspecified.takeOrElse {
-                            LocalTextStyle.current.color.takeOrElse {
-                                LocalContentColor.current
-                            }
-                        }
-                        // NOTE(text-perf-review): It might be worthwhile writing a bespoke merge implementation that
-                        // will avoid reallocating if all of the options here are the defaults
-                        val mergedStyle = LocalTextStyle.current.merge(
-                            TextStyle(
-                                color = textColor
-                            )
-                        )
-                        BasicText(
-                            text = hint,
-                            modifier = Modifier.align(Alignment.CenterHorizontally),
-                            style = mergedStyle,
-                            onTextLayout = {},
-                        )
-                        TextField(
-                            value = serialNumberHint,
+                        Text(
                             modifier = Modifier
                                 .padding(16.dp)
                                 .fillMaxWidth(),
-                            onValueChange = { serialNumberHint = it },
-                            maxLines = 1,
-                            textStyle = TextStyle(
-                                color = Color.Black,
-                                fontWeight = FontWeight.Normal
-                            ),
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Text,
-                                imeAction = ImeAction.Done
-                            ),
-                            keyboardActions = KeyboardActions(
-                                onDone = {
-                                    saveThatUserHasAuthenticated(sharedPreferences)
-                                    onLoginComplete.invoke(true)
-                                    keyboardController?.hide()
-                                })
+                            text = stringResource(id = R.string.onboarding),
+                            textAlign = TextAlign.Center,
+                            style = TextStyle(fontSize = 24.sp)
                         )
                     }
                 }
                 Button(
                     onClick = {
-                        if (serialNumberHint.text == "admin") {
-                            saveThatUserHasAuthenticated(sharedPreferences)
-                            onLoginComplete.invoke(true)
-                        }
+                        saveThatUserHasAuthenticated(sharedPreferences)
+                        onLoginComplete.invoke(true)
                     },
                     elevation = ButtonDefaults.buttonElevation(5.dp)
                 ) {
@@ -146,7 +106,7 @@ fun Login(
                         )
                     )
                     BasicText(
-                        text = "Login",
+                        text = "Continue",
                         modifier = Modifier.padding(16.dp),
                         style = mergedStyle,
                         onTextLayout = {},
