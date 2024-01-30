@@ -12,8 +12,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.jetbrains.annotations.TestOnly
+import kotlinx.coroutines.runBlocking
 import java.util.concurrent.CompletableFuture
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.resume
 import kotlin.math.roundToInt
 
 
@@ -24,9 +26,10 @@ class QuestionnaireViewModel(
 ) : ViewModel() {
 
     private val questions: List<Question> = questionLoader.loadQuestions()
-    private var currentQuestionPosition: Int = getLastAnsweredQuestionIndex()
+    private var currentQuestionPosition: Int = 0
 
-    private var _question: MutableStateFlow<Question?> = if (currentQuestionPosition != 39) {
+    private var _question: MutableStateFlow<Question?> = if (currentQuestionPosition != 39
+        && !getLastAnsweredQuestionIndex()) {
         MutableStateFlow(questions[currentQuestionPosition])
     } else {
         MutableStateFlow(null)
@@ -36,17 +39,16 @@ class QuestionnaireViewModel(
     private val answers = mutableMapOf<Int, Question>()
 
     fun submitAnswerForQuestion(answer: Float) {
-        answers[answer.toInt()] = questionFlow.value!!
-        if (currentQuestionPosition < questions.size) {
-            val toUpdate = currentQuestionPosition++
-            storeLastQuestionIndex(toUpdate)
+        answers[answer.toInt()] = _question.value!!
+        if (currentQuestionPosition != 39) {
             storeLastQuestionAnswered(answer)
-            val questionToUpdate = questions[toUpdate]
+            val questionToUpdate = questions[currentQuestionPosition+1]
+            currentQuestionPosition += 1
             _question.value = questionToUpdate
             return
+        } else {
+            storeLastQuestionIndex(true)
         }
-
-        _question.value = null
     }
 
     fun getResultForUser(): CompletableFuture<List<Map<PersonalityType, Double>>> {
@@ -56,14 +58,14 @@ class QuestionnaireViewModel(
             val answers = dao.getAll()
 
             val personalityTypes = setOf(
-                PersonalityType.DOER,
-                PersonalityType.UNBREAKABLE,
-                PersonalityType.REJECTED,
-                PersonalityType.SAVIOR,
-                PersonalityType.INSPECTOR,
-                PersonalityType.PESSIMIST,
-                PersonalityType.CONFORMER,
-                PersonalityType.DREAMER
+                PersonalityType.Doer,
+                PersonalityType.Unbreakable,
+                PersonalityType.Rejected,
+                PersonalityType.Savior,
+                PersonalityType.Inspector,
+                PersonalityType.Pessimist,
+                PersonalityType.Conformer,
+                PersonalityType.Dreamer
             )
             val result = personalityTypes.map {
                 val scoreForPersonality = getScoreForPersonalityType(answers, it)
@@ -85,7 +87,8 @@ class QuestionnaireViewModel(
                 val percentage = value.value / totalScore
                 val trimmedPercentage = (percentage * 100.0).roundToInt() / 100.0
                 processedResultsInPercentages.add(
-                    mapOf(Pair(entry.keys.first(), trimmedPercentage)))
+                    mapOf(Pair(entry.keys.first(), trimmedPercentage))
+                )
             }
         }
         return processedResultsInPercentages
@@ -109,13 +112,12 @@ class QuestionnaireViewModel(
             it.answer.toDouble()
         }))
 
-
-    private fun getLastAnsweredQuestionIndex(): Int {
-        return sharedPreferences.getInt(LAST_QUESTION_INDEX, 0)
+    private fun getLastAnsweredQuestionIndex(): Boolean {
+        return sharedPreferences.getBoolean(LAST_QUESTION_INDEX, false)
     }
 
-    private fun storeLastQuestionIndex(toUpdate: Int) {
-        sharedPreferences.edit().putInt(LAST_QUESTION_INDEX, toUpdate)
+    private fun storeLastQuestionIndex(isComplete: Boolean) {
+        sharedPreferences.edit().putBoolean(LAST_QUESTION_INDEX, isComplete)
             .apply()
     }
 

@@ -1,6 +1,7 @@
 package com.emotionsatwork.questionnaireapp.ui.composables
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
@@ -16,9 +18,11 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CardDefaults.cardColors
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,6 +35,7 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterStart
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.text.TextStyle
@@ -62,6 +67,7 @@ fun Questionnaire(
 }
 
 // add info icon with instructions on how to answer questions
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Question(viewModel: QuestionnaireViewModel, onQuestionnaireComplete: (Boolean) -> Unit) {
     val question by viewModel.questionFlow.collectAsStateWithLifecycle()
@@ -103,7 +109,7 @@ fun Question(viewModel: QuestionnaireViewModel, onQuestionnaireComplete: (Boolea
                             verticalArrangement = Arrangement.Center,
                             modifier = Modifier.padding(12.dp)
                         ) {
-                            var sliderPosition by remember(0.0f) { mutableFloatStateOf(0.0f) }
+                            var sliderPosition by remember { mutableFloatStateOf(5f) }
                             val minSliderValue = 0f
                             Box(
                                 modifier = Modifier
@@ -118,12 +124,26 @@ fun Question(viewModel: QuestionnaireViewModel, onQuestionnaireComplete: (Boolea
 
                                     // slider
                                     val maxSliderValue = 10f
+                                    val interactionSource = remember { MutableInteractionSource() }
                                     Slider(
                                         value = sliderPosition,
                                         onValueChange = { sliderPosition = it },
-                                        steps = 10,
+                                        steps = 9,
                                         valueRange = minSliderValue..maxSliderValue,
                                         modifier = Modifier.padding(horizontal = 12.dp)
+                                            .height(20.dp),
+                                        track = { sliderPositions ->
+                                            SliderDefaults.Track(
+                                                modifier = Modifier.scale(scaleX = 1f, scaleY = 2.15f),
+                                                sliderPositions = sliderPositions
+                                            )
+                                        },
+                                        thumb = {
+                                            SliderDefaults.Thumb(
+                                                modifier = Modifier.scale(scaleX = 1f, scaleY = 1f),
+                                                interactionSource = interactionSource,
+                                            )
+                                        }
                                     )
                                 }
                             }

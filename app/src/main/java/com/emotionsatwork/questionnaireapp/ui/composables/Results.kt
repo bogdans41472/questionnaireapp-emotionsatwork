@@ -1,8 +1,6 @@
 package com.emotionsatwork.questionnaireapp.ui.composables
 
 import android.content.Intent
-import android.graphics.Paint
-import android.graphics.Typeface
 import android.net.Uri
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
@@ -46,9 +44,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.graphics.nativeCanvas
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -70,7 +65,7 @@ fun Results(
     val futureResult = viewModel.getResultForUser()
     val results = futureResult.get(5, TimeUnit.SECONDS)
     var selectedItem by remember {
-        mutableStateOf(PersonalityType.UNKNOWN)
+        mutableStateOf(PersonalityType.Unknown)
     }
     Column(
         modifier = Modifier
@@ -78,6 +73,17 @@ fun Results(
             .padding(start = 8.dp, end = 8.dp)
             .verticalScroll(rememberScrollState()),
     ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    bottom = 20.dp,
+                    top = 20.dp
+                ),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(text = selectedItem.name)
+        }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -95,6 +101,7 @@ fun Results(
             }
         }
         IconButton(
+            enabled = true,
             onClick = {
                 openBottomSheet = true
             }, modifier = Modifier
@@ -122,9 +129,14 @@ fun Results(
             var shouldShowExercise by remember {
                 mutableStateOf(false)
             }
-            TabRow(selectedTabIndex = tabIndex) {
+            TabRow(
+                selectedTabIndex = tabIndex,
+                modifier = Modifier.fillMaxWidth(),
+                containerColor = Color.White
+            )
+            {
                 tabs.forEachIndexed { index, title ->
-                    Tab(text = { Text(title) },
+                    Tab(text = { Text(text = title) },
                         selected = tabIndex == index,
                         onClick = { tabIndex = index }
                     )
@@ -187,14 +199,14 @@ fun Results(
 @Composable
 fun ShowExercises(selectedItem: PersonalityType) {
     val exercises: String = when (selectedItem) {
-        PersonalityType.UNBREAKABLE -> stringResource(id = R.string.unbreakable_exercises)
-        PersonalityType.INSPECTOR -> stringResource(id = R.string.inspector_exercises)
-        PersonalityType.SAVIOR -> stringResource(id = R.string.savior_exercises)
-        PersonalityType.REJECTED -> stringResource(id = R.string.rejected_exercises)
-        PersonalityType.PESSIMIST -> stringResource(id = R.string.pessimist_exercises)
-        PersonalityType.DOER -> stringResource(id = R.string.doer_exercises)
-        PersonalityType.CONFORMER -> stringResource(id = R.string.conformer_exercises)
-        PersonalityType.DREAMER -> stringResource(id = R.string.dreamer_exercises)
+        PersonalityType.Unbreakable -> stringResource(id = R.string.unbreakable_exercises)
+        PersonalityType.Inspector -> stringResource(id = R.string.inspector_exercises)
+        PersonalityType.Savior -> stringResource(id = R.string.savior_exercises)
+        PersonalityType.Rejected -> stringResource(id = R.string.rejected_exercises)
+        PersonalityType.Pessimist -> stringResource(id = R.string.pessimist_exercises)
+        PersonalityType.Doer -> stringResource(id = R.string.doer_exercises)
+        PersonalityType.Conformer -> stringResource(id = R.string.conformer_exercises)
+        PersonalityType.Dreamer -> stringResource(id = R.string.dreamer_exercises)
         else -> ""
     }
     Column(
@@ -239,14 +251,14 @@ fun ShowSummary(selectedItem: PersonalityType) {
             .padding(top = 8.dp),
     ) {
         val personalitySummary: String = when (selectedItem) {
-            PersonalityType.UNBREAKABLE -> stringResource(id = R.string.unbreakable_summary)
-            PersonalityType.INSPECTOR -> stringResource(id = R.string.inspector_summary)
-            PersonalityType.SAVIOR -> stringResource(id = R.string.savior_summary)
-            PersonalityType.REJECTED -> stringResource(id = R.string.rejected_summary)
-            PersonalityType.PESSIMIST -> stringResource(id = R.string.pessimist_summary)
-            PersonalityType.DOER -> stringResource(id = R.string.doer_summary)
-            PersonalityType.CONFORMER -> stringResource(id = R.string.conformer_summary)
-            PersonalityType.DREAMER -> stringResource(id = R.string.dreamer_summary)
+            PersonalityType.Unbreakable -> stringResource(id = R.string.unbreakable_summary)
+            PersonalityType.Inspector -> stringResource(id = R.string.inspector_summary)
+            PersonalityType.Savior -> stringResource(id = R.string.savior_summary)
+            PersonalityType.Rejected -> stringResource(id = R.string.rejected_summary)
+            PersonalityType.Pessimist -> stringResource(id = R.string.pessimist_summary)
+            PersonalityType.Doer -> stringResource(id = R.string.doer_summary)
+            PersonalityType.Conformer -> stringResource(id = R.string.conformer_summary)
+            PersonalityType.Dreamer -> stringResource(id = R.string.dreamer_summary)
             else -> ""
         }
         Text(
@@ -264,7 +276,6 @@ fun ShowSummary(selectedItem: PersonalityType) {
 fun ClickablePieChart(
     modifier: Modifier = Modifier,
     results: List<Map<PersonalityType, Double>>,
-    textColor: Color = Color.Black,
     clickedItem: (PersonalityType) -> Unit
 ) {
     val values = results.flatMap { it.values }
@@ -281,24 +292,6 @@ fun ClickablePieChart(
         mutableIntStateOf(0)
     }
     val progressSize = mutableListOf<Float>()
-
-    val density = LocalDensity.current
-    val textFontSize = with(density) { 18.dp.toPx() }
-    val textPaint = remember {
-        Paint().apply {
-            color = textColor.toArgb()
-            textSize = textFontSize
-            textAlign = Paint.Align.CENTER
-        }
-    }
-    val selectedTextPaint = remember {
-        Paint().apply {
-            color = Color.White.toArgb()
-            textSize = textFontSize
-            textAlign = Paint.Align.CENTER
-            typeface = Typeface.create(Typeface.MONOSPACE, Typeface.BOLD)
-        }
-    }
     val animatable = remember {
         Animatable(-90f)
     }
@@ -352,88 +345,11 @@ fun ClickablePieChart(
                 )
                 startAngle += angle.toFloat()
             }
-            if (clickedItemIndex != -1) {
-                drawIntoCanvas { canvas ->
-                    clickedItem.invoke(selectedPersonalityType)
-                    //first slice
-                    val firstPersonalityString = (results[0].keys.elementAt(0)).toString()
-                    val firstPersonalityPercentage =
-                        ((results[0].values.elementAt(0) * 100).toString() + "%")
-                    canvas.nativeCanvas.drawText(
-                        firstPersonalityString,
-                        800f,
-                        400f,
-                        if (clickedItemIndex == 0) {
-                            selectedTextPaint
-                        } else {
-                            textPaint
-                        }
-                    )
-                    canvas.nativeCanvas.drawText(
-                        firstPersonalityPercentage,
-                        800f,
-                        480f,
-                        if (clickedItemIndex == 0) {
-                            selectedTextPaint
-                        } else {
-                            textPaint
-                        }
-                    )
-                    //second slice
-                    val secondPersonalityString = (results[1].keys.elementAt(0)).toString()
-                    val secondPersonalityPercentage =
-                        ((results[1].values.elementAt(0) * 100).toString() + "%")
-
-                    canvas.nativeCanvas.drawText(
-                        secondPersonalityString,
-                        (canvasSize / 2).toFloat(),
-                        800f,
-                        if (clickedItemIndex == 1) {
-                            selectedTextPaint
-                        } else {
-                            textPaint
-                        }
-                    )
-                    canvas.nativeCanvas.drawText(
-                        secondPersonalityPercentage,
-                        (canvasSize / 2).toFloat(),
-                        900f,
-                        if (clickedItemIndex == 1) {
-                            selectedTextPaint
-                        } else {
-                            textPaint
-                        }
-                    )
-                    // third slice
-                    val thirdPersonalityString = (results[2].keys.elementAt(0)).toString()
-                    val thirdPersonalityPercentage =
-                        ((results[2].values.elementAt(0) * 100).toString() + "%")
-
-                    canvas.nativeCanvas.drawText(
-                        thirdPersonalityString,
-                        300f,
-                        400f,
-                        if (clickedItemIndex == 2) {
-                            selectedTextPaint
-                        } else {
-                            textPaint
-                        }
-                    )
-                    canvas.nativeCanvas.drawText(
-                        thirdPersonalityPercentage,
-                        300f,
-                        480f,
-                        if (clickedItemIndex == 2) {
-                            selectedTextPaint
-                        } else {
-                            textPaint
-                        }
-                    )
-                }
-            }
+            clickedItem.invoke(selectedPersonalityType)
         }
     }
 }
+
 
 private fun touchPointToAngle(
     width: Float,
@@ -451,14 +367,14 @@ private fun touchPointToAngle(
 
 fun getColorToUse(personalityType: PersonalityType): Color {
     return when (personalityType) {
-        PersonalityType.DREAMER -> Color(0xffd277cf)
-        PersonalityType.DOER -> Color(0xfff9893c)
-        PersonalityType.PESSIMIST -> Color(0xffff5757)
-        PersonalityType.CONFORMER -> Color(0xff6c8bcb)
-        PersonalityType.REJECTED -> Color(0xffe1e2ec)
-        PersonalityType.SAVIOR -> Color(0xffffbf00)
-        PersonalityType.INSPECTOR -> Color(0xff45a297)
-        PersonalityType.UNBREAKABLE -> Color(0xff4131c8)
+        PersonalityType.Dreamer -> Color(0xffd277cf)
+        PersonalityType.Doer -> Color(0xfff9893c)
+        PersonalityType.Pessimist -> Color(0xffff5757)
+        PersonalityType.Conformer -> Color(0xff6c8bcb)
+        PersonalityType.Rejected -> Color(0xffe1e2ec)
+        PersonalityType.Savior -> Color(0xffffbf00)
+        PersonalityType.Inspector -> Color(0xff45a297)
+        PersonalityType.Unbreakable -> Color(0xff4131c8)
         else -> Color.White
     }
 }

@@ -57,7 +57,8 @@ fun Login(
                 .background(Color(0xFFF3F3F3))
         ) {
             Column(
-                modifier = Modifier.padding(top = 10.dp),
+                modifier = Modifier.padding(top = 10.dp)
+                    .background(Color(0xFFF3F3F3)),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 val painter = painterResource(id = R.drawable.ic_launcher)
@@ -82,6 +83,7 @@ fun Login(
                                 .fillMaxWidth(),
                             text = stringResource(id = R.string.onboarding),
                             textAlign = TextAlign.Center,
+                            color = Color.Black,
                             style = TextStyle(fontSize = 24.sp)
                         )
                     }
@@ -105,9 +107,10 @@ fun Login(
                             color = textColor
                         )
                     )
-                    BasicText(
+                    Text(
                         text = "Continue",
                         modifier = Modifier.padding(16.dp),
+                        color = Color.White,
                         style = mergedStyle,
                         onTextLayout = {},
                     )
