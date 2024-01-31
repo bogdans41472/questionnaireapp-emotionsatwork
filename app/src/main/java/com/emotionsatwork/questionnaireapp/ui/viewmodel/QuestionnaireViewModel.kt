@@ -48,6 +48,7 @@ class QuestionnaireViewModel(
             return
         } else {
             storeLastQuestionIndex(true)
+            _question.value = null
         }
     }
 
