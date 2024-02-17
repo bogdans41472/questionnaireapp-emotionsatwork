@@ -61,7 +61,7 @@ import java.util.concurrent.TimeUnit
 fun Results(
     viewModel: QuestionnaireViewModel,
 ) {
-    var openBottomSheet by rememberSaveable { mutableStateOf(false) }
+    var openBottomSheet by rememberSaveable { mutableStateOf(true) }
     val futureResult = viewModel.getResultForUser()
     val results = futureResult.get(5, TimeUnit.SECONDS)
     var selectedItem by remember {

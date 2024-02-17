@@ -1,6 +1,7 @@
 package com.emotionsatwork.questionnaireapp.ui.composables
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,6 +39,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.takeOrElse
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -131,7 +134,10 @@ fun Question(viewModel: QuestionnaireViewModel, onQuestionnaireComplete: (Boolea
                                         steps = 9,
                                         valueRange = minSliderValue..maxSliderValue,
                                         modifier = Modifier.padding(horizontal = 12.dp)
-                                            .height(20.dp),
+                                            .height(20.dp)
+                                            .clearAndSetSemantics {
+                                                contentDescription = "Slider position ${sliderPosition.roundToInt()}"
+                                            },
                                         track = { sliderPositions ->
                                             SliderDefaults.Track(
                                                 modifier = Modifier.scale(scaleX = 1f, scaleY = 2.15f),
@@ -167,13 +173,13 @@ fun Question(viewModel: QuestionnaireViewModel, onQuestionnaireComplete: (Boolea
                             }
                             Text(
                                 text = "Selected: ${sliderPosition.roundToInt()}",
-                                modifier = Modifier.padding(bottom = 12.dp)
+                                modifier = Modifier.padding(bottom = 12.dp),
                             )
                             Button(
                                 onClick = {
                                     // Get value from radio group
                                     viewModel.submitAnswerForQuestion(sliderPosition)
-                                    sliderPosition = minSliderValue
+                                    sliderPosition = 5f
                                 },
                                 elevation = ButtonDefaults.buttonElevation(5.dp)
                             ) {
@@ -187,8 +193,9 @@ fun Question(viewModel: QuestionnaireViewModel, onQuestionnaireComplete: (Boolea
                                         color = textColor
                                     )
                                 )
-                                BasicText(
+                                Text(
                                     text = "Submit answer",
+                                    fontSize = 16.sp,
                                     modifier = Modifier.padding(16.dp),
                                     style = mergedStyle
                                 )
@@ -206,21 +213,5 @@ fun Question(viewModel: QuestionnaireViewModel, onQuestionnaireComplete: (Boolea
                 }
             }
         }
-    }
-
-    @Composable
-    fun SliderLabel(label: String, minWidth: Dp, modifier: Modifier = Modifier) {
-        Text(
-            label,
-            textAlign = TextAlign.Center,
-            color = Color.White,
-            modifier = modifier
-                .background(
-                    color = Color.Black,
-                    shape = RoundedCornerShape(4.dp)
-                )
-                .padding(4.dp)
-                .defaultMinSize(minWidth = minWidth)
-        )
     }
 }

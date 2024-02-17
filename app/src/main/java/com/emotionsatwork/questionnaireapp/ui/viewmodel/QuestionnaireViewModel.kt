@@ -12,10 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.util.concurrent.CompletableFuture
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.resume
 import kotlin.math.roundToInt
 
 
@@ -29,7 +26,7 @@ class QuestionnaireViewModel(
     private var currentQuestionPosition: Int = 0
 
     private var _question: MutableStateFlow<Question?> = if (currentQuestionPosition != 39
-        && !getLastAnsweredQuestionIndex()) {
+        && !isQuestionnaireCompleted()) {
         MutableStateFlow(questions[currentQuestionPosition])
     } else {
         MutableStateFlow(null)
@@ -69,10 +66,9 @@ class QuestionnaireViewModel(
                 PersonalityType.Dreamer
             )
             val result = personalityTypes.map {
-                val scoreForPersonality = getScoreForPersonalityType(answers, it)
-                scoreForPersonality
+                getScoreForPersonalityType(answers, it)
             }.sortedByDescending {
-                it.values.maxByOrNull { score -> score }!!
+                it.values.maxByOrNull { score -> score }
             }.subList(0, 3)
                 .calculatePercentage()
             personalityResultType.complete(result)
@@ -113,12 +109,12 @@ class QuestionnaireViewModel(
             it.answer.toDouble()
         }))
 
-    private fun getLastAnsweredQuestionIndex(): Boolean {
-        return sharedPreferences.getBoolean(LAST_QUESTION_INDEX, false)
+    private fun isQuestionnaireCompleted(): Boolean {
+        return sharedPreferences.getBoolean(IS_COMPLETED, false)
     }
 
     private fun storeLastQuestionIndex(isComplete: Boolean) {
-        sharedPreferences.edit().putBoolean(LAST_QUESTION_INDEX, isComplete)
+        sharedPreferences.edit().putBoolean(IS_COMPLETED, isComplete)
             .apply()
     }
 
@@ -137,6 +133,6 @@ class QuestionnaireViewModel(
     }
 
     companion object {
-        private const val LAST_QUESTION_INDEX = "LAST_INDEX"
+        private const val IS_COMPLETED = "LAST_INDEX"
     }
 }

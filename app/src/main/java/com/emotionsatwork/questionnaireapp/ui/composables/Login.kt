@@ -112,6 +112,7 @@ fun Login(
                         modifier = Modifier.padding(16.dp),
                         color = Color.White,
                         style = mergedStyle,
+                        fontSize = 16.sp,
                         onTextLayout = {},
                     )
                 }
