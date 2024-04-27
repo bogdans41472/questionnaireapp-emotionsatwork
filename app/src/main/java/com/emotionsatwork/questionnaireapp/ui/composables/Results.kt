@@ -53,13 +53,13 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import com.emotionsatwork.questionnaireapp.R
 import com.emotionsatwork.questionnaireapp.datamodel.PersonalityType
-import com.emotionsatwork.questionnaireapp.ui.viewmodel.QuestionnaireViewModel
+import com.emotionsatwork.questionnaireapp.ui.viewmodel.ResultsViewModel
 import java.util.concurrent.TimeUnit
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Results(
-    viewModel: QuestionnaireViewModel,
+    viewModel: ResultsViewModel,
 ) {
     var openBottomSheet by rememberSaveable { mutableStateOf(true) }
     val futureResult = viewModel.getResultForUser()

@@ -1,126 +1,44 @@
 package com.emotionsatwork.questionnaireapp.ui.viewmodel
 
-import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.emotionsatwork.questionnaireapp.data.QuestionDb
 import com.emotionsatwork.questionnaireapp.data.QuestionnaireDao
-import com.emotionsatwork.questionnaireapp.data.QuestionnaireLoader
-import com.emotionsatwork.questionnaireapp.datamodel.PersonalityType
 import com.emotionsatwork.questionnaireapp.datamodel.Question
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.util.concurrent.CompletableFuture
-import kotlin.math.roundToInt
 
 
 class QuestionnaireViewModel(
-    questionLoader: QuestionnaireLoader,
-    private val sharedPreferences: SharedPreferences,
-    private val dao: QuestionnaireDao
+    val questions: List<Question>,
+    private val dao: QuestionnaireDao,
+    val onQuestionnaireComplete: () -> Unit
 ) : ViewModel() {
 
-    private val questions: List<Question> = questionLoader.loadQuestions()
+    private val answers = mutableMapOf<Int, Question>()
     private var currentQuestionPosition: Int = 0
-
-    private var _question: MutableStateFlow<Question?> = if (currentQuestionPosition != 39
-        && !isQuestionnaireCompleted()) {
+    private var _question: MutableStateFlow<Question> =
         MutableStateFlow(questions[currentQuestionPosition])
-    } else {
-        MutableStateFlow(null)
-    }
+
     val questionFlow = _question.asStateFlow()
 
-    private val answers = mutableMapOf<Int, Question>()
-
     fun submitAnswerForQuestion(answer: Float) {
-        answers[answer.toInt()] = _question.value!!
-        if (currentQuestionPosition != 39) {
-            storeLastQuestionAnswered(answer)
-            val questionToUpdate = questions[currentQuestionPosition+1]
+        answers[answer.toInt()] = _question.value
+        if (currentQuestionPosition < questions.size) {
+            storeQuestionAnswer(answer)
+            val questionToUpdate = questions[currentQuestionPosition]
             currentQuestionPosition += 1
             _question.value = questionToUpdate
-            return
         } else {
-            storeLastQuestionIndex(true)
-            _question.value = null
+            onQuestionnaireComplete.invoke()
         }
     }
 
-    fun getResultForUser(): CompletableFuture<List<Map<PersonalityType, Double>>> {
-        val personalityResultType: CompletableFuture<List<Map<PersonalityType, Double>>> =
-            CompletableFuture()
+    private fun storeQuestionAnswer(answer: Float) {
         viewModelScope.launch(Dispatchers.IO) {
-            val answers = dao.getAll()
-
-            val personalityTypes = setOf(
-                PersonalityType.Doer,
-                PersonalityType.Unbreakable,
-                PersonalityType.Rejected,
-                PersonalityType.Savior,
-                PersonalityType.Inspector,
-                PersonalityType.Pessimist,
-                PersonalityType.Conformer,
-                PersonalityType.Dreamer
-            )
-            val result = personalityTypes.map {
-                getScoreForPersonalityType(answers, it)
-            }.sortedByDescending {
-                it.values.maxByOrNull { score -> score }
-            }.subList(0, 3)
-                .calculatePercentage()
-            personalityResultType.complete(result)
-        }
-        return personalityResultType
-    }
-
-    private fun List<Map<PersonalityType, Double>>.calculatePercentage(): List<Map<PersonalityType, Double>> {
-        val totalScore = getTotalScore(this)
-        val processedResultsInPercentages = mutableListOf<Map<PersonalityType, Double>>()
-        this.forEach { entry ->
-            entry.mapValues { value ->
-                val percentage = value.value / totalScore
-                val trimmedPercentage = (percentage * 100.0).roundToInt() / 100.0
-                processedResultsInPercentages.add(
-                    mapOf(Pair(entry.keys.first(), trimmedPercentage))
-                )
-            }
-        }
-        return processedResultsInPercentages
-    }
-
-    private fun getTotalScore(result: List<Map<PersonalityType, Double>>): Double {
-        var totalValue = 0.0
-        result.forEach {
-            totalValue += it.values.first()
-        }
-        return totalValue
-    }
-
-    private fun getScoreForPersonalityType(
-        answers: List<QuestionDb>,
-        personalityType: PersonalityType
-    ): MutableMap<PersonalityType, Double> =
-        mutableMapOf(Pair(personalityType, answers.filter {
-            it.personalityType == personalityType
-        }.sumOf {
-            it.answer.toDouble()
-        }))
-
-    private fun isQuestionnaireCompleted(): Boolean {
-        return sharedPreferences.getBoolean(IS_COMPLETED, false)
-    }
-
-    private fun storeLastQuestionIndex(isComplete: Boolean) {
-        sharedPreferences.edit().putBoolean(IS_COMPLETED, isComplete)
-            .apply()
-    }
-
-    private fun storeLastQuestionAnswered(answer: Float) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val currentQuestion = _question.value!!
+            val currentQuestion = _question.value
             dao.insertQuestion(
                 QuestionDb(
                     currentQuestion.id,
@@ -130,9 +48,5 @@ class QuestionnaireViewModel(
                 )
             )
         }
-    }
-
-    companion object {
-        private const val IS_COMPLETED = "LAST_INDEX"
     }
 }
