@@ -69,7 +69,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$androidLifecycle")
     implementation("com.github.tehras:charts:0.2.4-alpha")
     implementation("androidx.room:room-runtime:$roomVersion")
-    implementation("androidx.room:room-runtime:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
     ksp("androidx.room:room-compiler:$roomVersion")
     implementation("com.google.code.gson:gson:2.10.1")
 

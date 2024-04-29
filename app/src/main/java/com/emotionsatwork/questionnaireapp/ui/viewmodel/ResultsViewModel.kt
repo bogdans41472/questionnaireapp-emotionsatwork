@@ -1,52 +1,52 @@
 package com.emotionsatwork.questionnaireapp.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.emotionsatwork.questionnaireapp.data.QuestionDb
 import com.emotionsatwork.questionnaireapp.data.QuestionnaireDao
 import com.emotionsatwork.questionnaireapp.datamodel.PersonalityType
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import java.util.concurrent.CompletableFuture
 
 class ResultsViewModel(
     private val dao: QuestionnaireDao,
-): ViewModel() {
+) : ViewModel() {
 
-    fun getResultForUser(): CompletableFuture<List<Map<PersonalityType, Double>>> {
-        val personalityResultType: CompletableFuture<List<Map<PersonalityType, Double>>> =
-            CompletableFuture()
+    private val _userResult = MutableStateFlow<Map<PersonalityType, Int>>(mapOf())
+    val userResult: StateFlow<Map<PersonalityType, Int>> = _userResult
+
+    init {
         viewModelScope.launch(Dispatchers.IO) {
-            val answers = dao.getAll()
-
-            val personalityTypes = setOf(
-                PersonalityType.Doer,
-                PersonalityType.Unbreakable,
-                PersonalityType.Rejected,
-                PersonalityType.Savior,
-                PersonalityType.Inspector,
-                PersonalityType.Pessimist,
-                PersonalityType.Conformer,
-                PersonalityType.Dreamer
-            )
-            val result = personalityTypes.map {
-                getScoreForPersonalityType(answers, it)
-            }.sortedByDescending {
-                it.values.maxByOrNull { score -> score }
+            dao.getAll().collect { answers ->
+                val personalityTypes = setOf(
+                    PersonalityType.Doer,
+                    PersonalityType.Unbreakable,
+                    PersonalityType.Rejected,
+                    PersonalityType.Savior,
+                    PersonalityType.Inspector,
+                    PersonalityType.Pessimist,
+                    PersonalityType.Conformer,
+                    PersonalityType.Dreamer
+                )
+                val results = mutableMapOf<PersonalityType, Int>()
+                personalityTypes.forEach { personalityType ->
+                    Log.i("Bogdan", "Calculating result for $personalityType")
+                    results[personalityType] = answers.filter {
+                        it.personalityType == personalityType
+                    }.sumOf {
+                        it.answer
+                    }
+                }
+                _userResult.emit(results)
             }
-            personalityResultType.complete(result)
         }
-        return personalityResultType
     }
 
-    private fun getScoreForPersonalityType(
-        answers: List<QuestionDb>,
-        personalityType: PersonalityType
-    ): MutableMap<PersonalityType, Double> =
-        mutableMapOf(Pair(personalityType, answers.filter {
-            it.personalityType == personalityType
-        }.sumOf {
-            it.answer.toDouble()
-        }))
-
+    fun deleteAllAnswers() {
+        viewModelScope.launch(Dispatchers.IO) {
+            dao.nukeAnswersDb()
+        }
+    }
 }

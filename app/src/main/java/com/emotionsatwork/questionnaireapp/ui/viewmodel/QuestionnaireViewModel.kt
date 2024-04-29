@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 class QuestionnaireViewModel(
     val questions: List<Question>,
     private val dao: QuestionnaireDao,
-    val onQuestionnaireComplete: () -> Unit
+    private val onQuestionnaireComplete: () -> Unit
 ) : ViewModel() {
 
     private val answers = mutableMapOf<Int, Question>()
@@ -26,11 +26,10 @@ class QuestionnaireViewModel(
 
     fun submitAnswerForQuestion(answer: Float) {
         answers[answer.toInt()] = _question.value
-        if (currentQuestionPosition < questions.size) {
+        if (currentQuestionPosition < questions.size - 1) {
             storeQuestionAnswer(answer)
-            val questionToUpdate = questions[currentQuestionPosition]
             currentQuestionPosition += 1
-            _question.value = questionToUpdate
+            _question.value = questions[currentQuestionPosition]
         } else {
             onQuestionnaireComplete.invoke()
         }

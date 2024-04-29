@@ -10,18 +10,22 @@ import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.Update
 import com.emotionsatwork.questionnaireapp.datamodel.PersonalityType
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface QuestionnaireDao {
 
     @Query("SELECT * FROM QuestionDb")
-    fun getAll(): List<QuestionDb>
+    fun getAll(): Flow<List<QuestionDb>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertQuestion(question: QuestionDb)
 
     @Delete
     fun deleteQuestion(question: QuestionDb)
+
+    @Query("DELETE FROM QuestionDb")
+    fun nukeAnswersDb()
 
     @Update
     fun updateQuestion(question: QuestionDb)

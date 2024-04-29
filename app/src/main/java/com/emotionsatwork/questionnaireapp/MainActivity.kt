@@ -18,6 +18,7 @@ import com.emotionsatwork.questionnaireapp.ui.composables.Results
 import com.emotionsatwork.questionnaireapp.ui.viewmodel.QuestionnaireViewModel
 import com.emotionsatwork.questionnaireapp.ui.theme.QuestionnaireAppTheme
 import com.emotionsatwork.questionnaireapp.ui.viewmodel.ResultsViewModel
+import kotlinx.coroutines.flow.collectLatest
 
 class MainActivity : ComponentActivity() {
 
@@ -28,14 +29,14 @@ class MainActivity : ComponentActivity() {
             QuestionnaireAppTheme {
                 val navController = rememberNavController()
                 var chosenEdition = remember { Edition.SEMINAR }
-                NavHost(navController = navController, startDestination = "auth") {
+                NavHost(navController = navController, startDestination = "onboarding") {
                     // replace login with onboarding screen
                     navigation(
                         startDestination = "login",
-                        route = "auth"
+                        route = "onboarding"
                     ) {
                         composable("login") {
-                            Onboarding(getSharedPreferences(LOGIN_DETAILS, MODE_PRIVATE)) {
+                            Onboarding {
                                 chosenEdition = it
                                 navController.navigate("questionnaire")
                             }
@@ -62,7 +63,9 @@ class MainActivity : ComponentActivity() {
                     ) {
                         composable("results_overview") {
                             val viewModel = ResultsViewModel(getDb().questionnaireDao())
-                            Results(viewModel)
+                            Results(viewModel) {
+                                navController.navigate("onboarding")
+                            }
                         }
                     }
                 }
@@ -74,9 +77,4 @@ class MainActivity : ComponentActivity() {
         applicationContext,
         AppDatabase::class.java, "database-name"
     ).build()
-
-    companion object {
-        private const val ANSWERS_KEY = "ANSWERS"
-        private const val LOGIN_DETAILS = "LOGIN"
-    }
 }

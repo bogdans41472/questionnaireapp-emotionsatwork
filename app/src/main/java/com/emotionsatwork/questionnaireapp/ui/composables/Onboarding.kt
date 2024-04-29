@@ -1,14 +1,14 @@
 package com.emotionsatwork.questionnaireapp.ui.composables
 
-import android.content.SharedPreferences
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.LocalContentColor
@@ -28,11 +28,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.emotionsatwork.questionnaireapp.R
 import com.emotionsatwork.questionnaireapp.datamodel.Edition
-import com.emotionsatwork.questionnaireapp.extensions.ONBOARDING_COMPLETED
 
 @Composable
 fun Onboarding(
-    sharedPreferences: SharedPreferences,
     chosenEdition: (Edition) -> Unit
 ) {
     Surface(
@@ -43,39 +41,32 @@ fun Onboarding(
         Column(
             modifier = Modifier
                 .padding(top = 10.dp)
-                .background(Color(0xFFF3F3F3)),
+                .background(Color(0xFFF3F3F3))
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            val painter = painterResource(id = R.drawable.ic_launcher)
+            val painter = painterResource(id = R.drawable.emotions_at_work_cover)
             Image(
                 painter = painter,
                 contentDescription = "Logo",
                 modifier = Modifier
-                    .weight(1f, fill = false)
-                    .aspectRatio(painter.intrinsicSize.width / painter.intrinsicSize.height)
-                    .fillMaxWidth()
+                    .size(300.dp, 450.dp)
                     .padding(horizontal = 10.dp),
                 alignment = Alignment.TopCenter
             )
-            Row(
-                modifier = Modifier
-                    .padding(4.dp)
-            ) {
-                Column {
-                    Text(
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .fillMaxWidth(),
-                        text = stringResource(id = R.string.onboarding),
-                        textAlign = TextAlign.Center,
-                        color = Color.Black,
-                        style = TextStyle(fontSize = 24.sp)
-                    )
-                }
+            Column {
+                Text(
+                    modifier = Modifier
+                        .padding(6.dp)
+                        .fillMaxWidth(),
+                    text = stringResource(id = R.string.onboarding),
+                    textAlign = TextAlign.Center,
+                    color = Color.Black,
+                    style = TextStyle(fontSize = 24.sp)
+                )
             }
             Button(
                 onClick = {
-                    onboardingCompleted(sharedPreferences)
                     chosenEdition.invoke(Edition.SEMINAR)
                 },
                 elevation = ButtonDefaults.buttonElevation(5.dp)
@@ -103,7 +94,6 @@ fun Onboarding(
             }
             Button(
                 onClick = {
-                    onboardingCompleted(sharedPreferences)
                     chosenEdition.invoke(Edition.BOOK)
                 },
                 elevation = ButtonDefaults.buttonElevation(5.dp),
@@ -132,12 +122,6 @@ fun Onboarding(
             }
         }
     }
-}
-
-fun onboardingCompleted(sharedPreferences: SharedPreferences) {
-    sharedPreferences.edit()
-        .putBoolean(ONBOARDING_COMPLETED, true)
-        .apply()
 }
 
 
