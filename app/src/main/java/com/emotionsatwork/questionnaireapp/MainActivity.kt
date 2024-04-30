@@ -1,5 +1,6 @@
 package com.emotionsatwork.questionnaireapp
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,13 +13,14 @@ import androidx.room.Room
 import com.emotionsatwork.questionnaireapp.data.AppDatabase
 import com.emotionsatwork.questionnaireapp.data.QuestionnaireLoader
 import com.emotionsatwork.questionnaireapp.datamodel.Edition
+import com.emotionsatwork.questionnaireapp.extensions.MAIN_SHARED_PREFS
+import com.emotionsatwork.questionnaireapp.extensions.QUESTIONNAIRE_COMPLETE_KEY
 import com.emotionsatwork.questionnaireapp.ui.composables.Onboarding
 import com.emotionsatwork.questionnaireapp.ui.composables.Questionnaire
 import com.emotionsatwork.questionnaireapp.ui.composables.Results
-import com.emotionsatwork.questionnaireapp.ui.viewmodel.QuestionnaireViewModel
 import com.emotionsatwork.questionnaireapp.ui.theme.QuestionnaireAppTheme
+import com.emotionsatwork.questionnaireapp.ui.viewmodel.QuestionnaireViewModel
 import com.emotionsatwork.questionnaireapp.ui.viewmodel.ResultsViewModel
-import kotlinx.coroutines.flow.collectLatest
 
 class MainActivity : ComponentActivity() {
 
@@ -29,8 +31,7 @@ class MainActivity : ComponentActivity() {
             QuestionnaireAppTheme {
                 val navController = rememberNavController()
                 var chosenEdition = remember { Edition.SEMINAR }
-                NavHost(navController = navController, startDestination = "onboarding") {
-                    // replace login with onboarding screen
+                NavHost(navController = navController, startDestination = getStartComposable()) {
                     navigation(
                         startDestination = "login",
                         route = "onboarding"
@@ -48,9 +49,12 @@ class MainActivity : ComponentActivity() {
                     ) {
                         composable("questionnaire_overview") {
                             val viewModel = QuestionnaireViewModel(
-                                QuestionnaireLoader(assetManager = assets).loadQuestions(chosenEdition),
+                                QuestionnaireLoader(assetManager = assets).loadQuestions(
+                                    chosenEdition
+                                ),
                                 getDb().questionnaireDao()
                             ) {
+                                updateQuestionnaireCompleteness(true)
                                 navController.navigate("results")
                             }
                             Questionnaire(viewModel)
@@ -64,12 +68,32 @@ class MainActivity : ComponentActivity() {
                         composable("results_overview") {
                             val viewModel = ResultsViewModel(getDb().questionnaireDao())
                             Results(viewModel) {
+                                updateQuestionnaireCompleteness(false)
                                 navController.navigate("onboarding")
                             }
                         }
                     }
                 }
             }
+        }
+    }
+
+
+    private fun updateQuestionnaireCompleteness(isComplete: Boolean) {
+        applicationContext.getSharedPreferences(MAIN_SHARED_PREFS, MODE_PRIVATE)
+            .edit()
+            .putBoolean(QUESTIONNAIRE_COMPLETE_KEY, isComplete)
+            .apply()
+    }
+
+    private fun getStartComposable(): String {
+        val isQuestionnaireCompleted =
+            applicationContext.getSharedPreferences(MAIN_SHARED_PREFS, Context.MODE_PRIVATE)
+                .getBoolean(QUESTIONNAIRE_COMPLETE_KEY, false)
+        return if (isQuestionnaireCompleted) {
+            "results"
+        } else {
+            "onboarding"
         }
     }
 

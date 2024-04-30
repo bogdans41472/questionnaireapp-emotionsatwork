@@ -47,9 +47,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
+import androidx.lifecycle.flowWithLifecycle
 import com.emotionsatwork.questionnaireapp.R
 import com.emotionsatwork.questionnaireapp.datamodel.PersonalityType
 import com.emotionsatwork.questionnaireapp.ui.viewmodel.ResultsViewModel
+import kotlinx.coroutines.flow.collect
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,9 +60,6 @@ fun Results(
     retakeAssessment: () -> Unit
 ) {
     var openBottomSheet by rememberSaveable { mutableStateOf(true) }
-    val processedResults by remember {
-        mutableStateOf(viewModel.userResult)
-    }
     var selectedItem by remember {
         mutableStateOf(PersonalityType.Pessimist)
     }
@@ -86,7 +85,7 @@ fun Results(
                 .height(200.dp)
                 .align(alignment = Alignment.CenterHorizontally)
         ) {
-            processedResults.value.forEach {
+            viewModel.userResult.value.forEach {
                 item {
                     Row(
                         modifier = Modifier

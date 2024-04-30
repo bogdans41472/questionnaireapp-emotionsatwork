@@ -1,6 +1,5 @@
 package com.emotionsatwork.questionnaireapp.ui.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.emotionsatwork.questionnaireapp.data.QuestionnaireDao
@@ -30,16 +29,15 @@ class ResultsViewModel(
                     PersonalityType.Conformer,
                     PersonalityType.Dreamer
                 )
-                val results = mutableMapOf<PersonalityType, Int>()
+                val foo = mutableMapOf<PersonalityType, Int>()
                 personalityTypes.forEach { personalityType ->
-                    Log.i("Bogdan", "Calculating result for $personalityType")
-                    results[personalityType] = answers.filter {
+                    foo[personalityType] = answers.filter {
                         it.personalityType == personalityType
                     }.sumOf {
                         it.answer
                     }
                 }
-                _userResult.emit(results)
+                _userResult.emit(foo)
             }
         }
     }

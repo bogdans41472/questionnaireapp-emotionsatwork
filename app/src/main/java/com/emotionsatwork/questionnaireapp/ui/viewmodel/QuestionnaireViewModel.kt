@@ -1,5 +1,9 @@
 package com.emotionsatwork.questionnaireapp.ui.viewmodel
 
+
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.emotionsatwork.questionnaireapp.data.QuestionDb
@@ -17,7 +21,7 @@ class QuestionnaireViewModel(
     private val onQuestionnaireComplete: () -> Unit
 ) : ViewModel() {
 
-    private val answers = mutableMapOf<Int, Question>()
+    private val answers = mutableMapOf<Int, Int>()
     private var currentQuestionPosition: Int = 0
     private var _question: MutableStateFlow<Question> =
         MutableStateFlow(questions[currentQuestionPosition])
@@ -25,27 +29,33 @@ class QuestionnaireViewModel(
     val questionFlow = _question.asStateFlow()
 
     fun submitAnswerForQuestion(answer: Float) {
-        answers[answer.toInt()] = _question.value
+        answers[_question.value.id] = answer.toInt()
         if (currentQuestionPosition < questions.size - 1) {
-            storeQuestionAnswer(answer)
             currentQuestionPosition += 1
             _question.value = questions[currentQuestionPosition]
         } else {
-            onQuestionnaireComplete.invoke()
+
+            storeQuestionAnswers {
+                Handler(Looper.getMainLooper()).post {
+                    onQuestionnaireComplete.invoke()
+                }
+            }
         }
     }
 
-    private fun storeQuestionAnswer(answer: Float) {
+    private fun storeQuestionAnswers(isDoneStoringStuff: () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
-            val currentQuestion = _question.value
-            dao.insertQuestion(
-                QuestionDb(
-                    currentQuestion.id,
-                    currentQuestion.title,
-                    answer.toInt(),
-                    currentQuestion.personalityType
+            answers.forEach {
+                dao.insertQuestion(
+                    QuestionDb(
+                        it.key,
+                        questions[it.key].title,
+                        it.value,
+                        questions[it.key].personalityType
+                    )
                 )
-            )
+            }
+            isDoneStoringStuff.invoke()
         }
     }
 }
