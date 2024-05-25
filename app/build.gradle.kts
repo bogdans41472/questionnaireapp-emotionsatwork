@@ -67,7 +67,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$androidLifecycle")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:$androidLifecycle")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$androidLifecycle")
-    implementation("com.github.tehras:charts:0.2.4-alpha")
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
     implementation("androidx.room:room-runtime:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
     ksp("androidx.room:room-compiler:$roomVersion")
