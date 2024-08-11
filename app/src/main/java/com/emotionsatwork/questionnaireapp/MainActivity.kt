@@ -15,6 +15,7 @@ import com.emotionsatwork.questionnaireapp.data.QuestionnaireLoader
 import com.emotionsatwork.questionnaireapp.datamodel.Edition
 import com.emotionsatwork.questionnaireapp.extensions.MAIN_SHARED_PREFS
 import com.emotionsatwork.questionnaireapp.extensions.QUESTIONNAIRE_COMPLETE_KEY
+import com.emotionsatwork.questionnaireapp.ui.composables.ISBNCheck
 import com.emotionsatwork.questionnaireapp.ui.composables.Onboarding
 import com.emotionsatwork.questionnaireapp.ui.composables.Questionnaire
 import com.emotionsatwork.questionnaireapp.ui.composables.Results
@@ -33,13 +34,17 @@ class MainActivity : ComponentActivity() {
                 var chosenEdition = remember { Edition.SEMINAR }
                 NavHost(navController = navController, startDestination = getStartComposable()) {
                     navigation(
-                        startDestination = "login",
+                        startDestination = "editionChooser",
                         route = "onboarding"
                     ) {
-                        composable("login") {
+                        composable("editionChooser") {
                             Onboarding {
                                 chosenEdition = it
-                                navController.navigate("questionnaire")
+                                if (chosenEdition == Edition.BOOK) {
+                                    navController.navigate("isbnCheck")
+                                } else {
+                                    navController.navigate("questionnaire")
+                                }
                             }
                         }
                     }
@@ -47,6 +52,11 @@ class MainActivity : ComponentActivity() {
                         startDestination = "questionnaire_overview",
                         route = "questionnaire"
                     ) {
+                        composable("isbnCheck") {
+                            ISBNCheck {
+                                navController.navigate("questionnaire")
+                            }
+                        }
                         composable("questionnaire_overview") {
                             val viewModel = QuestionnaireViewModel(
                                 QuestionnaireLoader(assetManager = assets).loadQuestions(
@@ -60,6 +70,7 @@ class MainActivity : ComponentActivity() {
                             Questionnaire(viewModel)
                         }
                     }
+
                     // show congratulations
                     navigation(
                         startDestination = "results_overview",

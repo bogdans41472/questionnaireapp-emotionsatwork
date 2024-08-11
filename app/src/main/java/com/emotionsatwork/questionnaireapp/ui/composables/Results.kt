@@ -29,7 +29,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.SheetState
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
@@ -55,7 +54,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.core.content.ContextCompat.getString
 import androidx.core.content.ContextCompat.startActivity
 import com.emotionsatwork.questionnaireapp.R
 import com.emotionsatwork.questionnaireapp.datamodel.PersonalityType
@@ -74,7 +72,6 @@ fun Results(
     var selectedItem: PersonalityType? by remember {
         mutableStateOf(results.getHighestPersonalityType())
     }
-    var mentalModelDescription by rememberSaveable { mutableStateOf(selectedItem) }
     val scrollState = rememberScrollState()
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -299,22 +296,24 @@ fun Results(
                     ) {
                         Text(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 4.dp, end = 4.dp),
-                            text = textToShow
+                                .fillMaxWidth(),
+                            text = textToShow,
+                            textAlign = TextAlign.Start,
                         )
                     }
                 }
             }
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.CenterHorizontally)
-                    .padding(20.dp)
-                    .height(40.dp),
-                onClick = { openMentalModelDisabler = true }
-            ) {
-                Text(text = "Mental Model Disabler")
+            if (tabIndex == 0) {
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterHorizontally)
+                        .padding(20.dp)
+                        .height(40.dp),
+                    onClick = { openMentalModelDisabler = true }
+                ) {
+                    Text(text = "Mental Model Disabler")
+                }
             }
         }
     }
@@ -380,7 +379,7 @@ fun ConfirmationDialog(
                     onDismissRequest()
                 }
             ) {
-                Text("Dismiss")
+                Text("Cancel")
             }
         }
     )
@@ -413,15 +412,17 @@ fun ShowExercises(selectedItem: PersonalityType?) {
         val url = stringResource(id = R.string.url_to_website)
         val context = LocalContext.current
 
-        Button(onClick = {
-            val website = Uri.parse(url)
-            val intent = Intent(Intent.ACTION_VIEW, website)
-            startActivity(context, intent, null)
-        },
+        Button(
+            onClick = {
+                val website = Uri.parse(url)
+                val intent = Intent(Intent.ACTION_VIEW, website)
+                startActivity(context, intent, null)
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 8.dp)
-                .align(Alignment.CenterHorizontally)) {
+                .align(Alignment.CenterHorizontally)
+        ) {
             Text(
                 modifier = Modifier
                     .fillMaxSize(),
