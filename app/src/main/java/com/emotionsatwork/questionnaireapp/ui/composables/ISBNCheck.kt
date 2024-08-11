@@ -102,7 +102,9 @@ fun MyAlertDialog(
 }
 
 fun checkForISBNValidity(text: String): Boolean {
-    return text == "978-3-033-10189-0" || text == "978-3-033-10189-3"
+    return text == "978-3-033-10189-0"
+            || text == "978-3-033-10189-3"
+            || text == "B0D48MGJN5"
 }
 
 
