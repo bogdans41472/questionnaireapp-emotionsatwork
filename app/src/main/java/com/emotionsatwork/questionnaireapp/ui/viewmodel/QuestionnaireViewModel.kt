@@ -34,7 +34,6 @@ class QuestionnaireViewModel(
             currentQuestionPosition += 1
             _question.value = questions[currentQuestionPosition]
         } else {
-
             storeQuestionAnswers {
                 Handler(Looper.getMainLooper()).post {
                     onQuestionnaireComplete.invoke()

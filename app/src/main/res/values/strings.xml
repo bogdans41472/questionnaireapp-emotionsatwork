@@ -1,45 +1,5 @@
 <resources>
     <string name="app_name">Optical Emotions</string>
-
-    <string name="unbreakable_summary">I am confident in my capabilities to handle any task through dedication, vigilance, and
-maintaining a sense of control. Despite the urge to accomplish everything, I acknowledge the
-importance of persistence in bringing about improvement. I take pride in being seen as
-dependable and strong, always ready to face any challenge without showing vulnerability.
-However, I recognize that my excessive focus on practical matters often leads me to overlook
-my aspirations, and I tend to make excuses to maintain the safety and predictability of my
-life. Nevertheless, the satisfaction I derive from being perceived as dependable and prepared
-remains significant to me</string>
-    <string name="inspector_summary">In my relentless pursuit of excellence, I hold the firm belief that anything less than
-perfection is unacceptable. I dedicate myself to achieving flawlessness in every aspect of my
-life, which breeds guilt, shame, self-doubt, and a fear of failure when I make even the slightest
-mistake or fall short of my high expectations. This constant comparison to others while
-measuring my circumstances against an idealized scenario fuels feelings of inadequacy, envy,
-and jealousy toward those who have achieved success. This behavior serves to intensify my
-sense of inferiority and dissatisfaction with my own abilities.</string>
-    <string name="savior_summary">Taking responsibility for the problems of others makes me feel valuable and distinctive. I
-believe that if I don\'t help others, it implies that I don\'t care for or love them. I hold myself
-accountable for the pain that my loved ones experience. I believe that caring excessively for
-others increases my own self-worth.</string>
-    <string name="rejected_summary">I erect emotional walls that prevent others from getting too close to me, hoping that this
-will shield me from getting hurt. My self-esteem is linked to receiving approval from others,
-and I forget that self- acceptance should come first. I hold onto relationships that are harmful
-to my overall health and leave me feeling drained. I struggle with emotional closeness and
-avoid showing vulnerability, which makes me value my independence even more.</string>
-    <string name="pessimist_summary">I focus on the most unfavorable possible outcomes of every situation. I give most of my
-attention to the potential risks and negative aspects, while overlooking the possible benefits.
-I believe that every good thing has an expiration date. I engage in negative self-talk and tend
-to dismiss positive assumptions</string>
-    <string name="doer_summary">I frequently push myself beyond my physical limits, taking on tasks that exceed my capabilities, and viewing rest as a waste of time, which hinders my growth and progress. My conviction that my value is tied to my productivity leads me to believe that the most respected people are the ones who work tirelessly. I postpone my happiness, believing it will only come with the attainment of specific objectives and prosperity. My self-worth is linked to external accomplishments and the recognition they bring, causing me to push myself to exhaustion in pursuit of success. Yet, when I am unable to meet my lofty expectations, I succumb to harsh self-criticism, trapped in the paradox of relentless achievement. If someone asked me to describe my life, I would say it is a conundrum of relentless achievement.</string>
-    <string name="conformer_summary">I struggle to set healthy boundaries, often prioritizing the needs of others over my own,
-and find validation in accommodating them, even at the expense of my well-being. I seek
-recognition through noble suffering and unwavering sacrifice, while downplaying material
-possessions. I frequently engage in conversations revolving around crises, and perceive
-challenges as overwhelming, often feeling powerless and burdened by past traumas</string>
-    <string name="dreamer_summary">In order to avoid confronting my emotions, I turn to immediate gratification, such as
-overeating, drinking, spending money, and binge-watching TV. These behaviors are not
-beneficial to me in the long run, but they help to distract me from my reality. I have a tendency
-to think that if I feel sad, there must be something wrong with me. I hold onto the belief that
-it is not appropriate to share my negative emotions with others.</string>
     <string name="summary_title">"Summary "</string>
     <string name="exercises">Exercises</string>
     <string name="unbreakable_exercises">The Mindful Bus Ride\nDelegating With Confidence\nExpress Coherently, Aligning Your Heart &amp; Brain\nLeveraging The Relationships Capital\nPerspective Taking: Understanding Others\nPromote Spontaneity and Openness\nStrengthen Your Flexibility Muscle</string>
@@ -52,8 +12,52 @@ it is not appropriate to share my negative emotions with others.</string>
     <string name="dreamer_exercises">The Mindful Bus Ride\nDenied Facts And Feelings Are Still Facts And Feelings\nDon\'t Ignore Your Emotions: Combat Alexithymia\nGrowth is Being Sugar-Coated\nStop Over-Identification\nThe Real Consequences Of Problem Solving\nYou Choose: Realistic Optimism vs. Toxic Positivism</string>
     <string name="info_tutorial">Tap on any of the items in the results list to get more info about it</string>
     <string name="url_to_website">https://emotions-at-work.activehosted.com/f/3</string>
-    <string name="url_details">"For more details, please click this text to visit our website: "</string>
+    <string name="url_details">Enhance Your Journey</string>
     <string name="onboarding">Ready to discover your predominant mental models?</string>
+
+    <!-- Summary -->
+    <string name="unbreakable_summary">I am confident in my capabilities to handle any task through dedication, vigilance, and
+maintaining a sense of control. I take pride in being seen as dependable and strong, always ready
+to face any challenge without showing vulnerability.</string>
+    <string name="inspector_summary">In my relentless pursuit of excellence, I hold the firm belief that anything less than perfection
+is unacceptable. I dedicate myself to achieving flawlessness in every aspect of my life, which breeds
+guilt, shame, self-doubt, and a fear. The constant comparison to others while measuring my
+circumstances against an idealized scenario fuels feelings of inadequacy, envy, and jealousy toward
+those who have achieved success</string>
+    <string name="savior_summary">Taking responsibility for the problems of others makes me feel valuable and distinctive. I
+believe that if I don\'t help others, it implies that I don\'t care for or love them. I hold myself
+accountable for the pain that my loved ones experience. I believe that caring excessively for others
+increases my own self-worth.</string>
+    <string name="rejected_summary">I erect emotional walls that prevent others from getting too close to me, hoping that this will
+shield me from getting hurt. My self-esteem is linked to receiving approval from others, and I
+forget that self- acceptance should come first. I hold onto relationships that are harmful to my
+overall health and leave me feeling drained.</string>
+    <string name="pessimist_summary">I focus on the most unfavorable possible outcomes of every situation. I give most of my
+attention to the potential risks and negative aspects, while overlooking the possible benefits. I
+believe that every good thing has an expiration date. I engage in negative self-talk and tend to
+dismiss positive assumptions.</string>
+    <string name="doer_summary">I frequently push myself beyond my physical limits, taking on tasks that exceed my capabilities,
+and viewing rest as a waste of time, which hinders my growth and progress. My conviction that
+my value is tied to my productivity. Yet, when I am unable to meet my lofty expectations, I
+succumb to harsh self-criticism, trapped in the paradox of relentless achievement.</string>
+    <string name="conformer_summary">I struggle to set healthy boundaries, often prioritizing the needs of others over my own, and
+find validation in accommodating them, even at the expense of my well-being. I frequently engage
+in conversations revolving around crises, and perceive challenges as overwhelming, often feeling
+powerless and burdened by past traumas.</string>
+    <string name="dreamer_summary">In order to avoid confronting my emotions, I turn to immediate gratification, such as
+overeating, spending money, and binge-watching TV. These behaviors help distract me from my
+reality. I have a tendency to think that if I feel sad, there must be something wrong with me. I hold
+onto the belief that it is not appropriate to share my negative emotions with others.</string>
+
+    <!-- Mental Models -->
+    <string name="conformer_mental_model">Practice assertiveness by saying no to at least one request today, realizing that setting boundaries won\'t cause a disaster. Cultivate self-compassion, treat yourself with kindness and care, and discover your worth beyond sacrifices.</string>
+    <string name="doer_mental_model">Foster a positive perspective. One way to do this is by identifying and acknowledging three\nthings you have achieved today, or throughout the year. Embracing this positive perspective\nempowers you to nurture your self-appreciation and find a sense of fulfilment along your journey\ntoward personal growth and success.</string>
+    <string name="dreamer_mental_model">Instead of being overly optimistic as a means to avoid facing difficult emotions or truths, take\na moment to pause, sit down, and reflect on the emotion that you are feeling, even if it is\nuncomfortable. You may discover new opportunities or perspectives by allowing yourself to\nexperience and process the feelings that you have been avoiding.</string>
+    <string name="inspector_mental_model">Challenge your all-or-nothing mentality and the black-and-white thinking associated with your\nperfectionism. Recognize that progress is a gradual process that includes both successes and\nsetbacks. Allow yourself to celebrate even the smallest successes and view your setbacks as\nopportunities for learning and growth.</string>
+    <string name="pessimist_mental_model">Challenge your negative thoughts. When you notice cynical thoughts arising, ask yourself if\nthey are realistic and if there is evidence to support them.</string>
+    <string name="rejected_mental_model">Focus on your capabilities. Remind yourself of your strengths and accomplishments. This can\nhelp boost your confidence and self-esteem.</string>
+    <string name="savior_mental_model">Recognize your own needs. Start by identifying your needs and priorities. You cannot be an\neffective helper or rescuer if you are not taking care of yourself first.</string>
+    <string name="unbreakable_mental_model">Embrace vulnerability with someone you trust by sharing small feelings or mistakes, and\ngradually work on opening up. Practice mindfulness to become aware of your thoughts, feelings,\nand bodily sensations without judgment, allowing you to forge a deeper connection with your\nemotions</string>
 
 
 </resources>

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,10 +24,12 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomSheetDefaults
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
@@ -52,6 +55,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.core.content.ContextCompat.getString
 import androidx.core.content.ContextCompat.startActivity
 import com.emotionsatwork.questionnaireapp.R
 import com.emotionsatwork.questionnaireapp.datamodel.PersonalityType
@@ -65,10 +69,12 @@ fun Results(
     retakeAssessment: () -> Unit
 ) {
     var openBottomSheet by rememberSaveable { mutableStateOf(false) }
+    var openMentalModelDisabler by rememberSaveable { mutableStateOf(false) }
     val results = viewModel.getUserResult()
     var selectedItem: PersonalityType? by remember {
         mutableStateOf(results.getHighestPersonalityType())
     }
+    var mentalModelDescription by rememberSaveable { mutableStateOf(selectedItem) }
     val scrollState = rememberScrollState()
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -251,10 +257,10 @@ fun Results(
             val bottomSheetState = rememberModalBottomSheetState(
                 skipPartiallyExpanded = skipPartiallyExpanded
             )
+            val windowInsets = if (edgeToEdgeEnabled)
+                WindowInsets(0) else BottomSheetDefaults.windowInsets
 
             if (openBottomSheet) {
-                val windowInsets = if (edgeToEdgeEnabled)
-                    WindowInsets(0) else BottomSheetDefaults.windowInsets
 
                 ModalBottomSheet(
                     onDismissRequest = { openBottomSheet = false },
@@ -277,7 +283,55 @@ fun Results(
                     }
                 }
             }
+
+            if (openMentalModelDisabler) {
+                val textToShow = getMentalModelDescription(selectedItem)
+                ModalBottomSheet(
+                    onDismissRequest = { openMentalModelDisabler = false },
+                    sheetState = bottomSheetState,
+                    windowInsets = windowInsets
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 4.dp, end = 4.dp),
+                            text = textToShow
+                        )
+                    }
+                }
+            }
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally)
+                    .padding(20.dp)
+                    .height(40.dp),
+                onClick = { openMentalModelDisabler = true }
+            ) {
+                Text(text = "Mental Model Disabler")
+            }
         }
+    }
+}
+
+@Composable
+fun getMentalModelDescription(selectedItem: PersonalityType?): String {
+    return when (selectedItem) {
+        PersonalityType.Conformer -> stringResource(id = R.string.conformer_mental_model)
+        PersonalityType.Doer -> stringResource(id = R.string.doer_mental_model)
+        PersonalityType.Dreamer -> stringResource(id = R.string.dreamer_mental_model)
+        PersonalityType.Inspector -> stringResource(id = R.string.inspector_mental_model)
+        PersonalityType.Pessimist -> stringResource(id = R.string.pessimist_mental_model)
+        PersonalityType.Rejected -> stringResource(id = R.string.rejected_mental_model)
+        PersonalityType.Savior -> stringResource(id = R.string.savior_mental_model)
+        PersonalityType.Unbreakable -> stringResource(R.string.unbreakable_mental_model)
+        else -> ""
     }
 }
 
@@ -358,24 +412,21 @@ fun ShowExercises(selectedItem: PersonalityType?) {
         )
         val url = stringResource(id = R.string.url_to_website)
         val context = LocalContext.current
-        TextButton(
-            onClick = {
-                val website = Uri.parse(url)
-                val intent = Intent(Intent.ACTION_VIEW, website)
-                startActivity(context, intent, null)
-            },
+
+        Button(onClick = {
+            val website = Uri.parse(url)
+            val intent = Intent(Intent.ACTION_VIEW, website)
+            startActivity(context, intent, null)
+        },
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .padding(top = 8.dp)
-                .align(Alignment.CenterHorizontally),
-        ) {
+                .align(Alignment.CenterHorizontally)) {
             Text(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 30.dp)
-                    .align(Alignment.Bottom),
-                textAlign = TextAlign.Center,
-                text = stringResource(R.string.url_details) + stringResource(id = R.string.url_to_website)
+                    .fillMaxSize(),
+                text = stringResource(R.string.url_details),
+                textAlign = TextAlign.Center
             )
         }
     }
