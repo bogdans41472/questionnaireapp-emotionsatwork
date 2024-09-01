@@ -2,7 +2,6 @@ package com.emotionsatwork.questionnaireapp.ui.composables
 
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -46,12 +45,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.content.ContextCompat.startActivity
@@ -63,14 +62,14 @@ import com.emotionsatwork.questionnaireapp.ui.viewmodel.ResultsViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Results(
-    viewModel: ResultsViewModel,
+    viewModel: ResultsViewModel?,
     retakeAssessment: () -> Unit
 ) {
     var openBottomSheet by rememberSaveable { mutableStateOf(false) }
     var openMentalModelDisabler by rememberSaveable { mutableStateOf(false) }
-    val results = viewModel.getUserResult()
+    val results = viewModel?.getUserResult()
     var selectedItem: PersonalityType? by remember {
-        mutableStateOf(results.getHighestPersonalityType())
+        mutableStateOf(results?.getHighestPersonalityType())
     }
     val scrollState = rememberScrollState()
     Surface(modifier = Modifier.fillMaxSize()) {
@@ -81,7 +80,7 @@ fun Results(
                 .verticalScroll(scrollState)
         ) {
             Column {
-                results.forEach {
+                results?.forEach {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -90,7 +89,6 @@ fun Results(
                             Box(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(4.dp))
-                                    .background(Color.LightGray)
                                     .fillMaxWidth()
                                     .clickable {
                                         selectedItem = it.key
@@ -128,7 +126,6 @@ fun Results(
                             Box(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(4.dp))
-                                    .background(Color.White)
                                     .fillMaxWidth()
                                     .clickable {
                                         selectedItem = it.key
@@ -174,7 +171,7 @@ fun Results(
                     ConfirmationDialog(
                         onDismissRequest = { showConfirmationDialog.value = false },
                         onConfirmation = {
-                            viewModel.deleteAllAnswers()
+                            viewModel?.deleteAllAnswers()
                             retakeAssessment.invoke()
                         }
                     )
@@ -220,7 +217,6 @@ fun Results(
                 TabRow(
                     selectedTabIndex = tabIndex,
                     modifier = Modifier.fillMaxWidth(),
-                    containerColor = Color.White
                 )
                 {
                     tabs.forEachIndexed { index, title ->
@@ -258,7 +254,6 @@ fun Results(
                 WindowInsets(0) else BottomSheetDefaults.windowInsets
 
             if (openBottomSheet) {
-
                 ModalBottomSheet(
                     onDismissRequest = { openBottomSheet = false },
                     sheetState = bottomSheetState,
@@ -308,12 +303,34 @@ fun Results(
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.CenterHorizontally)
-                        .padding(20.dp)
+                        .padding(8.dp)
                         .height(40.dp),
                     onClick = { openMentalModelDisabler = true }
                 ) {
                     Text(text = "Mental Model Disabler")
                 }
+            }
+
+            val url = stringResource(id = R.string.url_to_website)
+            val context = LocalContext.current
+
+            Button(
+                onClick = {
+                    val website = Uri.parse(url)
+                    val intent = Intent(Intent.ACTION_VIEW, website)
+                    startActivity(context, intent, null)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+                    .align(Alignment.CenterHorizontally)
+            ) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    text = stringResource(R.string.url_details),
+                    textAlign = TextAlign.Center
+                )
             }
         }
     }
@@ -409,27 +426,6 @@ fun ShowExercises(selectedItem: PersonalityType?) {
                 .fillMaxWidth(),
             text = exercises,
         )
-        val url = stringResource(id = R.string.url_to_website)
-        val context = LocalContext.current
-
-        Button(
-            onClick = {
-                val website = Uri.parse(url)
-                val intent = Intent(Intent.ACTION_VIEW, website)
-                startActivity(context, intent, null)
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp)
-                .align(Alignment.CenterHorizontally)
-        ) {
-            Text(
-                modifier = Modifier
-                    .fillMaxSize(),
-                text = stringResource(R.string.url_details),
-                textAlign = TextAlign.Center
-            )
-        }
     }
 }
 
@@ -459,4 +455,10 @@ fun ShowSummary(selectedItem: PersonalityType?) {
             textAlign = TextAlign.Justify
         )
     }
+}
+
+@Preview
+@Composable
+fun ResultsPreview() {
+    Results(null) { }
 }

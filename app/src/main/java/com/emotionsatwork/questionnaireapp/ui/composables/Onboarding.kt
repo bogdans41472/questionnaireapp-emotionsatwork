@@ -3,6 +3,7 @@ package com.emotionsatwork.questionnaireapp.ui.composables
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -24,6 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.emotionsatwork.questionnaireapp.R
@@ -40,7 +42,7 @@ fun Onboarding(
     ) {
         Column(
             modifier = Modifier
-                .padding(top = 10.dp)
+                .fillMaxHeight()
                 .background(Color(0xFFF3F3F3))
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -51,7 +53,7 @@ fun Onboarding(
                 contentDescription = "Logo",
                 modifier = Modifier
                     .size(300.dp, 450.dp)
-                    .padding(horizontal = 10.dp),
+                    .padding(horizontal = 10.dp, vertical = 10.dp),
                 alignment = Alignment.TopCenter
             )
             Column {
@@ -67,45 +69,16 @@ fun Onboarding(
             }
             Button(
                 onClick = {
-                    chosenEdition.invoke(Edition.SEMINAR)
-                },
-                elevation = ButtonDefaults.buttonElevation(5.dp)
-            ) {
-                val textColor = Color.Unspecified.takeOrElse {
-                    LocalTextStyle.current.color.takeOrElse {
-                        LocalContentColor.current
-                    }
-                }
-                // NOTE(text-perf-review): It might be worthwhile writing a bespoke merge implementation that
-                // will avoid reallocating if all of the options here are the defaults
-                val mergedStyle = LocalTextStyle.current.merge(
-                    TextStyle(
-                        color = textColor
-                    )
-                )
-                Text(
-                    text = "Seminar Edition",
-                    modifier = Modifier.padding(16.dp),
-                    color = Color.White,
-                    style = mergedStyle,
-                    fontSize = 16.sp,
-                    onTextLayout = {},
-                )
-            }
-            Button(
-                onClick = {
                     chosenEdition.invoke(Edition.BOOK)
                 },
                 elevation = ButtonDefaults.buttonElevation(5.dp),
-                modifier = Modifier.padding(top = 16.dp)
             ) {
                 val textColor = Color.Unspecified.takeOrElse {
                     LocalTextStyle.current.color.takeOrElse {
                         LocalContentColor.current
                     }
                 }
-                // NOTE(text-perf-review): It might be worthwhile writing a bespoke merge implementation that
-                // will avoid reallocating if all of the options here are the defaults
+
                 val mergedStyle = LocalTextStyle.current.merge(
                     TextStyle(
                         color = textColor
@@ -120,8 +93,42 @@ fun Onboarding(
                     onTextLayout = {},
                 )
             }
+
+            Button(
+                onClick = {
+                    chosenEdition.invoke(Edition.SEMINAR)
+                },
+                elevation = ButtonDefaults.buttonElevation(5.dp),
+                modifier = Modifier.padding(top = 16.dp)
+            ) {
+                val textColor = Color.Unspecified.takeOrElse {
+                    LocalTextStyle.current.color.takeOrElse {
+                        LocalContentColor.current
+                    }
+                }
+                
+                val mergedStyle = LocalTextStyle.current.merge(
+                    TextStyle(
+                        color = textColor
+                    )
+                )
+                Text(
+                    text = "Seminar Edition",
+                    modifier = Modifier.padding(16.dp),
+                    color = Color.White,
+                    style = mergedStyle,
+                    fontSize = 16.sp,
+                    onTextLayout = {},
+                )
+            }
         }
     }
+}
+
+@Preview
+@Composable
+fun OnboardingPreview() {
+    Onboarding {}
 }
 
 

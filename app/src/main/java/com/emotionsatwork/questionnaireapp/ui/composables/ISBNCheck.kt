@@ -35,12 +35,9 @@ fun ISBNCheck(
             var text by remember { mutableStateOf("") }
             var openAlertDialog by remember { mutableStateOf(false) }
 
-            Text(
-                modifier = Modifier
-                    .padding(20.dp),
-                text = "Please enter the ISBN at the back of your book"
-            )
-            OutlinedTextField(value = text, onValueChange = { text = it })
+            OutlinedTextField(value = text, onValueChange = { text = it }, label = {
+                Text("ISBN or AISN")
+            })
 
             Button(modifier = Modifier.padding(20.dp),
                 onClick = {
@@ -103,7 +100,9 @@ fun MyAlertDialog(
 
 fun checkForISBNValidity(text: String): Boolean {
     return text == "978-3-033-10189-0"
+            || text == "9783033101890"
             || text == "978-3-033-10189-3"
+            || text == "9783033101893"
             || text == "B0D48MGJN5"
 }
 
@@ -111,7 +110,5 @@ fun checkForISBNValidity(text: String): Boolean {
 @Composable
 @Preview
 fun ISBNCheckpreview() {
-    ISBNCheck {
-
-    }
+    ISBNCheck {}
 }
