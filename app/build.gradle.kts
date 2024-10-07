@@ -12,8 +12,8 @@ android {
         applicationId = "com.emotionsatwork.questionnaireapp"
         minSdk = 27
         targetSdk = 34
-        versionCode = 11
-        versionName = "1.11"
+        versionCode = 12
+        versionName = "1.12"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
